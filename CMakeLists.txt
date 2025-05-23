@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 project(align_it)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 IF(NOT CMAKE_BUILD_TYPE)
@@ -10,8 +10,8 @@ IF(NOT CMAKE_BUILD_TYPE)
             FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
-option(BUILD_RDKIT_SUPPORT "Build against the RDKit instead of OpenBabel3" OFF)
-option(BUILD_PYTHON_SUPPORT "Build Python wrappers (requires RDKit support)" OFF)
+option(BUILD_RDKIT_SUPPORT "Build against the RDKit instead of OpenBabel3" ON)
+option(BUILD_PYTHON_SUPPORT "Build Python wrappers (requires RDKit support)" ON)
 
 if(BUILD_PYTHON_SUPPORT AND (NOT BUILD_RDKIT_SUPPORT))
     message(WARNING "Disabling BUILD_PYTHON_SUPPORT because BUILD_RDKIT_SUPPORT is not enabled")
@@ -20,6 +20,15 @@ endif()
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 set(ALIGNIT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+if(DEFINED ENV{CONDA_PREFIX})
+    set(CMAKE_INSTALL_PREFIX $ENV{CONDA_PREFIX})
+    set(CONDA_INCLUDE_DIR $ENV{CONDA_PREFIX}/include)
+    set(CONDA_LIB_DIR $ENV{CONDA_PREFIX}/lib)
+    include_directories(${CONDA_INCLUDE_DIR})
+    link_directories(${CONDA_LIB_DIR})
+endif()
 
 set(VERSION_MAJOR 1)
 set(VERSION_MINOR 0)
@@ -39,10 +48,12 @@ if(NOT BUILD_RDKIT_SUPPORT)
     message(STATUS "Building Align-it against OpenBabel3")
     find_package(OpenBabel3 REQUIRED)
     include_directories(${OPENBABEL3_INCLUDE_DIR})
-else(NOT BUILD_RDKIT_SUPPORT)
+else(NOT BUILD_RDKIT_SUPPORT)  # RDKit
     message(STATUS "Building Align-it against RDKit")
     add_definitions(-DUSE_RDKIT)
     find_package(RDKit REQUIRED)
+    set(RDKIT_INCLUDE_DIR $ENV{CONDA_PREFIX}/include)
+    file(GLOB RDKIT_LIBRARIES "${CONDA_LIB_DIR}/libRDKit*.dylib")
     find_package(Threads)
     set(RDKit_THREAD_LIBS Threads::Threads)
     find_package(Boost REQUIRED)
@@ -68,6 +79,13 @@ install(TARGETS ${PROJECT_NAME} DESTINATION bin)
 message("Installation directory of executable: ${CMAKE_INSTALL_PREFIX}/bin")
 
 if(BUILD_PYTHON_SUPPORT)
+    if(NOT Python3_EXECUTABLE)  # Install Python into virtual environments, instead of globally
+        execute_process(
+            COMMAND "which python"
+            OUTPUT_VARIABLE Python3_EXECUTABLE
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+    endif()
     find_package(Python3 COMPONENTS Interpreter REQUIRED)
     add_subdirectory(src/Wrap)
     if(SKBUILD)
@@ -76,8 +94,8 @@ if(BUILD_PYTHON_SUPPORT)
     else()
         execute_process(
             COMMAND "${Python3_EXECUTABLE}" -c "if True:
-              from distutils import sysconfig as sc
-              print(sc.get_python_lib(1,0))"
+              import sysconfig
+              print(sysconfig.get_path('platlib'))"
             OUTPUT_VARIABLE PYTHON_SITE
             OUTPUT_STRIP_TRAILING_WHITESPACE)
         message(STATUS "Install location ${PYTHON_SITE}/pyalignit")
