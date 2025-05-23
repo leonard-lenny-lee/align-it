@@ -5,24 +5,24 @@ Copyright 2021 by OliverBScott and the Align-it contributors
 
 This file is part of Align-it.
 
-	Align-it is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Lesser General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+        Align-it is free software: you can redistribute it and/or modify
+        it under the terms of the GNU Lesser General Public License as published
+        by the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
 
-	Align-it is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Lesser General Public License for more details.
+        Align-it is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU Lesser General Public License for more details.
 
-	You should have received a copy of the GNU Lesser General Public License
-	along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
+        You should have received a copy of the GNU Lesser General Public License
+        along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
 
 Align-it can be linked against OpenBabel version 3 or the RDKit.
 
-	OpenBabel is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation version 2 of the License.
+        OpenBabel is free software; you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation version 2 of the License.
 
 ***********************************************************************/
 
@@ -33,14 +33,14 @@ Align-it can be linked against OpenBabel version 3 or the RDKit.
 #include <tuple>
 
 // Align-it
-#include <pharmacophore.h>
-#include <pharMerger.h>
+#include <alignment.h>
 #include <calcPharm.h>
 #include <functionMapping.h>
-#include <solutionInfo.h>
-#include <alignment.h>
-#include <siMath.h>
+#include <pharMerger.h>
+#include <pharmacophore.h>
 #include <result.h>
+#include <siMath.h>
+#include <solutionInfo.h>
 
 // Toolkit
 #ifndef USE_RDKIT
@@ -51,44 +51,25 @@ using Molecule = OpenBabel::OBMol;
 using Molecule = RDKit::ROMol;
 #endif
 
-
 namespace alignit {
 
-Pharmacophore calcPharmacophore(
-    Molecule &mol,
-    bool calcArom = true,
-    bool calcHDon = true,
-    bool calcHAcc = true,
-    bool calcLipo = true,
-    bool calcCharge = true,
-    bool calcHybrid = true
-);
+Pharmacophore calcPharmacophore(Molecule &mol, bool calcArom = true,
+                                bool calcHDon = true, bool calcHAcc = true,
+                                bool calcLipo = true, bool calcCharge = true,
+                                bool calcHybrid = true);
 
 void mergePharmacophore(Pharmacophore &p);
 
-Result alignPharmacophores(
-    Pharmacophore &ref,
-    Pharmacophore &db,
-    double epsilon,
-    bool useNormals,
-    bool useExclusion,
-    Molecule *dbMol
-);
+Result alignPharmacophores(Pharmacophore &ref, Pharmacophore &db,
+                           double epsilon, bool useNormals, bool useExclusion,
+                           Molecule *dbMol);
 
-std::tuple<Pharmacophore, Result> alignMols(
-    Molecule &refMol,
-    Molecule &refDb,
-    bool calcArom = true,
-    bool calcHDon = true,
-    bool calcHAcc = true,
-    bool calcLipo = true,
-    bool calcCharge = true,
-    bool calcHybrid = true,
-    bool merge = false,
-    double epsilon = 0.5,
-    bool useNormals = true,
-    bool useExclusion = false
-);
+std::tuple<Pharmacophore, Result>
+alignMols(Molecule &refMol, Molecule &refDb, bool calcArom = true,
+          bool calcHDon = true, bool calcHAcc = true, bool calcLipo = true,
+          bool calcCharge = true, bool calcHybrid = true, bool merge = false,
+          double epsilon = 0.5, bool useNormals = true,
+          bool useExclusion = false);
 
 } // namespace alignit
 

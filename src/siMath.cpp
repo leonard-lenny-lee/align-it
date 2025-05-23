@@ -5,24 +5,24 @@ Copyright 2012-2013 by Silicos-it, a division of Imacosi BVBA
 
 This file is part of Align-it.
 
-	Align-it is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Lesser General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+        Align-it is free software: you can redistribute it and/or modify
+        it under the terms of the GNU Lesser General Public License as published
+        by the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
 
-	Align-it is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Lesser General Public License for more details.
+        Align-it is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU Lesser General Public License for more details.
 
-	You should have received a copy of the GNU Lesser General Public License
-	along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
+        You should have received a copy of the GNU Lesser General Public License
+        along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
 
 Align-it can be linked against OpenBabel version 3 or the RDKit.
 
-	OpenBabel is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation version 2 of the License.
+        OpenBabel is free software; you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation version 2 of the License.
 
 ***********************************************************************/
 
@@ -272,10 +272,10 @@ void Vector::swap(const unsigned int i, const unsigned int j) {
 }
 
 Matrix::Matrix(const unsigned int n, const unsigned int m)
-        : _nRows(n), _nCols(m), _pMatrix(nullptr) {
+    : _nRows(n), _nCols(m), _pMatrix(nullptr) {
     if (n && m) {
         auto *dummy = new double[n * m]; // data
-        _pMatrix = new double *[n];        // row pointers
+        _pMatrix = new double *[n];      // row pointers
         for (unsigned int i = 0; i < n; ++i) {
             _pMatrix[i] = dummy;
             dummy += m;
@@ -284,7 +284,7 @@ Matrix::Matrix(const unsigned int n, const unsigned int m)
 }
 
 Matrix::Matrix(const unsigned int n, const unsigned int m, const double &v)
-        : _nRows(n), _nCols(m), _pMatrix(nullptr) {
+    : _nRows(n), _nCols(m), _pMatrix(nullptr) {
     if (n && m) {
         auto *dummy = new double[n * m];
         _pMatrix = new double *[n];
@@ -299,7 +299,7 @@ Matrix::Matrix(const unsigned int n, const unsigned int m, const double &v)
 }
 
 Matrix::Matrix(const unsigned int n, const unsigned int m, const Vector &vec)
-        : _nRows(n), _nCols(m), _pMatrix(nullptr) {
+    : _nRows(n), _nCols(m), _pMatrix(nullptr) {
     auto *dummy(new double[n * m]);
     _pMatrix = new double *[n];
     for (unsigned int i = 0; i < n; ++i) {
@@ -314,7 +314,7 @@ Matrix::Matrix(const unsigned int n, const unsigned int m, const Vector &vec)
 }
 
 Matrix::Matrix(const Matrix &src)
-        : _nRows(src._nRows), _nCols(src._nCols), _pMatrix(nullptr) {
+    : _nRows(src._nRows), _nCols(src._nCols), _pMatrix(nullptr) {
     if (_nRows && _nCols) {
         auto *dummy(new double[_nRows * _nCols]);
         _pMatrix = new double *[_nRows];
@@ -331,8 +331,8 @@ Matrix::Matrix(const Matrix &src)
 Matrix::~Matrix() {
     if (_pMatrix != nullptr) {
         if (_pMatrix[0] != nullptr)
-            delete[](_pMatrix[0]);
-        delete[](_pMatrix);
+            delete[] (_pMatrix[0]);
+        delete[] (_pMatrix);
     }
     _pMatrix = nullptr;
 }
@@ -510,7 +510,8 @@ void Matrix::swapRows(unsigned int i, unsigned int j) {
     {
         dummy = _pMatrix[i][k];          // store original element at [i,k]
         _pMatrix[i][k] = _pMatrix[j][k]; // replace [i,k] with [j,k]
-        _pMatrix[j][k] = dummy; // replace [j,k] with element originally at [i,k]
+        _pMatrix[j][k] =
+            dummy; // replace [j,k] with element originally at [i,k]
     }
     return;
 }
@@ -521,7 +522,8 @@ void Matrix::swapColumns(unsigned int i, unsigned int j) {
     {
         dummy = _pMatrix[k][i];          // store original element at [k,i]
         _pMatrix[k][i] = _pMatrix[k][j]; // replace [k,i] with [k,j]
-        _pMatrix[k][j] = dummy; // replace [k,j] with element originally at [k,i]
+        _pMatrix[k][j] =
+            dummy; // replace [k,j] with element originally at [k,i]
     }
     return;
 }
@@ -576,10 +578,10 @@ Matrix Matrix::transpose() {
 }
 
 SiMath::Vector SiMath::rowProduct(const Matrix &A, const Vector &U) {
-    Vector v(A.nbrRows(),0.0);
-    for (unsigned int i=0; i<A.nbrRows(); ++i) {
+    Vector v(A.nbrRows(), 0.0);
+    for (unsigned int i = 0; i < A.nbrRows(); ++i) {
         double s(0.0);
-        for (unsigned int j=0; j<A.nbrColumns(); ++j) {
+        for (unsigned int j = 0; j < A.nbrColumns(); ++j) {
             s += A[i][j] * U[j];
         }
         v[i] = s;
@@ -588,10 +590,10 @@ SiMath::Vector SiMath::rowProduct(const Matrix &A, const Vector &U) {
 }
 
 SiMath::Vector SiMath::colProduct(const Vector &U, const Matrix &A) {
-    Vector v(A.nbrColumns(),0.0);
-    for (unsigned int i=0; i<A.nbrColumns(); ++i) {
+    Vector v(A.nbrColumns(), 0.0);
+    for (unsigned int i = 0; i < A.nbrColumns(); ++i) {
         double s(0.0);
-        for (unsigned int j=0; j<A.nbrRows(); ++j) {
+        for (unsigned int j = 0; j < A.nbrRows(); ++j) {
             s += U[j] * A[j][i];
         }
         v[i] = s;
@@ -600,8 +602,8 @@ SiMath::Vector SiMath::colProduct(const Vector &U, const Matrix &A) {
 }
 
 SVD::SVD(const Matrix &Aorig, bool bU, bool bV)
-        : _m(Aorig.nbrRows()), _n(Aorig.nbrColumns()), _U(), _V(), _S(0),
-          _computeV(bV), _computeU(bU) {
+    : _m(Aorig.nbrRows()), _n(Aorig.nbrColumns()), _U(), _V(), _S(0),
+      _computeV(bV), _computeU(bU) {
     // dimensionality of the problem
     int nu = min(_m, _n);
     int nct = min(_m - 1, _n);
@@ -661,8 +663,8 @@ SVD::SVD(const Matrix &Aorig, bool bU, bool bV)
                 }
             }
 
-            // Place the k-th row of A into e for the subsequent calculation of the
-            // row transformation.
+            // Place the k-th row of A into e for the subsequent calculation of
+            // the row transformation.
             e[j] = Acopy[k][j];
         }
 
@@ -674,8 +676,8 @@ SVD::SVD(const Matrix &Aorig, bool bU, bool bV)
         }
 
         if (k < nrt) {
-            // Compute the k-th row transformation and place the k-th super-diagonal
-            // in e[k]. Compute 2-norm without under/overflow.
+            // Compute the k-th row transformation and place the k-th
+            // super-diagonal in e[k]. Compute 2-norm without under/overflow.
             e[k] = 0.0;
             for (i = k + 1; i < _n; i++) {
                 e[k] = triangle(e[k], e[i]);
@@ -709,7 +711,8 @@ SVD::SVD(const Matrix &Aorig, bool bU, bool bV)
                 }
             }
 
-            // Place the transformation in _V for subsequent back multiplication.
+            // Place the transformation in _V for subsequent back
+            // multiplication.
             if (_computeV) {
                 for (i = k + 1; i < _n; i++) {
                     _V[i][k] = e[i];
@@ -798,13 +801,15 @@ SVD::SVD(const Matrix &Aorig, bool bU, bool bV)
         unsigned int mode = 0;
 
         // Here is where a test for too many iterations would go.
-        // This section of the program inspects for negligible elements in the s and
-        // e arrays. On completion the variables mode and k are set as follows.
+        // This section of the program inspects for negligible elements in the s
+        // and e arrays. On completion the variables mode and k are set as
+        // follows.
 
         // mode = 1     if s(p) and e[k-1] are negligible and k<p
         // mode = 2     if s(k) is negligible and k<p
-        // mode = 3     if e[k-1] is negligible, k<p, and s(k), ..., s(p) are not
-        // negligible (qr step). mode = 4     if e(p-1) is negligible (convergence).
+        // mode = 3     if e[k-1] is negligible, k<p, and s(k), ..., s(p) are
+        // not negligible (qr step). mode = 4     if e(p-1) is negligible
+        // (convergence).
         for (k = p - 2; k >= -1; k--) {
             if (k == -1) {
                 break;
@@ -843,151 +848,151 @@ SVD::SVD(const Matrix &Aorig, bool bU, bool bV)
         // Perform the task indicated by the selected mode.
         switch (mode) {
 
-            case 1: { // Deflate negligible _S[p]
-                double f = e[p - 2];
-                e[p - 2] = 0.0;
-                for (j = p - 2; j >= k; j--) {
-                    double t = SiMath::triangle(_S[j], f);
-                    double cs = _S[j] / t;
-                    double sn = f / t;
-                    _S[j] = t;
-                    if (j != k) {
-                        f = -sn * e[j - 1];
-                        e[j - 1] = cs * e[j - 1];
-                    }
-
-                    // update V
-                    if (_computeV) {
-                        for (i = 0; i < _n; i++) {
-                            t = cs * _V[i][j] + sn * _V[i][p - 1];
-                            _V[i][p - 1] = -sn * _V[i][j] + cs * _V[i][p - 1];
-                            _V[i][j] = t;
-                        }
-                    }
-                }
-            } break; // end case 1
-
-            case 2: { // Split at negligible _S[k]
-                double f = e[k - 1];
-                e[k - 1] = 0.0;
-                for (j = k; j < p; j++) {
-                    double t = triangle(_S[j], f);
-                    double cs = _S[j] / t;
-                    double sn = f / t;
-                    _S[j] = t;
-                    f = -sn * e[j];
-                    e[j] = cs * e[j];
-
-                    if (_computeU) {
-                        for (i = 0; i < _m; i++) {
-                            t = cs * _U[i][j] + sn * _U[i][k - 1];
-                            _U[i][k - 1] = -sn * _U[i][j] + cs * _U[i][k - 1];
-                            _U[i][j] = t;
-                        }
-                    }
-                }
-            } break; // end case 2
-
-            case 3: { // Perform one qr step.
-
-                // Calculate the shift.
-                double scale =
-                        max(max(max(max(fabs(_S[p - 1]), fabs(_S[p - 2])), fabs(e[p - 2])),
-                                fabs(_S[k])),
-                            fabs(e[k]));
-                double sp = _S[p - 1] / scale;
-                double spm1 = _S[p - 2] / scale;
-                double epm1 = e[p - 2] / scale;
-                double sk = _S[k] / scale;
-                double ek = e[k] / scale;
-                double b = ((spm1 + sp) * (spm1 - sp) + epm1 * epm1) / 2.0;
-                double c = (sp * epm1) * (sp * epm1);
-                double shift = 0.0;
-                if ((b != 0.0) || (c != 0.0)) {
-                    shift = sqrt(b * b + c);
-                    if (b < 0.0) {
-                        shift = -shift;
-                    }
-                    shift = c / (b + shift);
-                }
-                double f = (sk + sp) * (sk - sp) + shift;
-                double g = sk * ek;
-
-                // Chase zeros.
-
-                for (j = k; j < p - 1; j++) {
-                    double t = SiMath::triangle(f, g);
-                    double cs = f / t;
-                    double sn = g / t;
-                    if (j != k) {
-                        e[j - 1] = t;
-                    }
-                    f = cs * _S[j] + sn * e[j];
-                    e[j] = cs * e[j] - sn * _S[j];
-                    g = sn * _S[j + 1];
-                    _S[j + 1] = cs * _S[j + 1];
-
-                    if (_computeV) {
-                        for (i = 0; i < _n; i++) {
-                            t = cs * _V[i][j] + sn * _V[i][j + 1];
-                            _V[i][j + 1] = -sn * _V[i][j] + cs * _V[i][j + 1];
-                            _V[i][j] = t;
-                        }
-                    }
-                    t = SiMath::triangle(f, g);
-                    cs = f / t;
-                    sn = g / t;
-                    _S[j] = t;
-                    f = cs * e[j] + sn * _S[j + 1];
-                    _S[j + 1] = -sn * e[j] + cs * _S[j + 1];
-                    g = sn * e[j + 1];
-                    e[j + 1] = cs * e[j + 1];
-
-                    if (_computeU && (j < _m - 1)) {
-                        for (i = 0; i < _m; i++) {
-                            t = cs * _U[i][j] + sn * _U[i][j + 1];
-                            _U[i][j + 1] = -sn * _U[i][j] + cs * _U[i][j + 1];
-                            _U[i][j] = t;
-                        }
-                    }
-                }
-                e[p - 2] = f;
-                iter++;
-            } break; // end case 3
-
-                // convergence step
-            case 4: {
-
-                // Make the singular values positive.
-                if (_S[k] <= 0.0) {
-                    _S[k] = (_S[k] < 0.0) ? -_S[k] : 0.0;
-
-                    if (_computeV) {
-                        for (i = 0; i <= pp; i++) {
-                            _V[i][k] = -_V[i][k];
-                        }
-                    }
+        case 1: { // Deflate negligible _S[p]
+            double f = e[p - 2];
+            e[p - 2] = 0.0;
+            for (j = p - 2; j >= k; j--) {
+                double t = SiMath::triangle(_S[j], f);
+                double cs = _S[j] / t;
+                double sn = f / t;
+                _S[j] = t;
+                if (j != k) {
+                    f = -sn * e[j - 1];
+                    e[j - 1] = cs * e[j - 1];
                 }
 
-                // Order the singular values.
-                while (k < pp) {
-                    if (_S[k] >= _S[k + 1])
-                        break;
-
-                    // swap values and columns if necessary
-                    _S.swap(k, k + 1);
-
-                    if (_computeV && (k < _n - 1))
-                        _V.swapColumns(k, k + 1);
-
-                    if (_computeU && (k < _m - 1))
-                        _U.swapColumns(k, k + 1);
-
-                    k++;
+                // update V
+                if (_computeV) {
+                    for (i = 0; i < _n; i++) {
+                        t = cs * _V[i][j] + sn * _V[i][p - 1];
+                        _V[i][p - 1] = -sn * _V[i][j] + cs * _V[i][p - 1];
+                        _V[i][j] = t;
+                    }
                 }
-                iter = 0;
-                p--;
-            } break; // end case 4
+            }
+        } break; // end case 1
+
+        case 2: { // Split at negligible _S[k]
+            double f = e[k - 1];
+            e[k - 1] = 0.0;
+            for (j = k; j < p; j++) {
+                double t = triangle(_S[j], f);
+                double cs = _S[j] / t;
+                double sn = f / t;
+                _S[j] = t;
+                f = -sn * e[j];
+                e[j] = cs * e[j];
+
+                if (_computeU) {
+                    for (i = 0; i < _m; i++) {
+                        t = cs * _U[i][j] + sn * _U[i][k - 1];
+                        _U[i][k - 1] = -sn * _U[i][j] + cs * _U[i][k - 1];
+                        _U[i][j] = t;
+                    }
+                }
+            }
+        } break; // end case 2
+
+        case 3: { // Perform one qr step.
+
+            // Calculate the shift.
+            double scale = max(
+                max(max(max(fabs(_S[p - 1]), fabs(_S[p - 2])), fabs(e[p - 2])),
+                    fabs(_S[k])),
+                fabs(e[k]));
+            double sp = _S[p - 1] / scale;
+            double spm1 = _S[p - 2] / scale;
+            double epm1 = e[p - 2] / scale;
+            double sk = _S[k] / scale;
+            double ek = e[k] / scale;
+            double b = ((spm1 + sp) * (spm1 - sp) + epm1 * epm1) / 2.0;
+            double c = (sp * epm1) * (sp * epm1);
+            double shift = 0.0;
+            if ((b != 0.0) || (c != 0.0)) {
+                shift = sqrt(b * b + c);
+                if (b < 0.0) {
+                    shift = -shift;
+                }
+                shift = c / (b + shift);
+            }
+            double f = (sk + sp) * (sk - sp) + shift;
+            double g = sk * ek;
+
+            // Chase zeros.
+
+            for (j = k; j < p - 1; j++) {
+                double t = SiMath::triangle(f, g);
+                double cs = f / t;
+                double sn = g / t;
+                if (j != k) {
+                    e[j - 1] = t;
+                }
+                f = cs * _S[j] + sn * e[j];
+                e[j] = cs * e[j] - sn * _S[j];
+                g = sn * _S[j + 1];
+                _S[j + 1] = cs * _S[j + 1];
+
+                if (_computeV) {
+                    for (i = 0; i < _n; i++) {
+                        t = cs * _V[i][j] + sn * _V[i][j + 1];
+                        _V[i][j + 1] = -sn * _V[i][j] + cs * _V[i][j + 1];
+                        _V[i][j] = t;
+                    }
+                }
+                t = SiMath::triangle(f, g);
+                cs = f / t;
+                sn = g / t;
+                _S[j] = t;
+                f = cs * e[j] + sn * _S[j + 1];
+                _S[j + 1] = -sn * e[j] + cs * _S[j + 1];
+                g = sn * e[j + 1];
+                e[j + 1] = cs * e[j + 1];
+
+                if (_computeU && (j < _m - 1)) {
+                    for (i = 0; i < _m; i++) {
+                        t = cs * _U[i][j] + sn * _U[i][j + 1];
+                        _U[i][j + 1] = -sn * _U[i][j] + cs * _U[i][j + 1];
+                        _U[i][j] = t;
+                    }
+                }
+            }
+            e[p - 2] = f;
+            iter++;
+        } break; // end case 3
+
+            // convergence step
+        case 4: {
+
+            // Make the singular values positive.
+            if (_S[k] <= 0.0) {
+                _S[k] = (_S[k] < 0.0) ? -_S[k] : 0.0;
+
+                if (_computeV) {
+                    for (i = 0; i <= pp; i++) {
+                        _V[i][k] = -_V[i][k];
+                    }
+                }
+            }
+
+            // Order the singular values.
+            while (k < pp) {
+                if (_S[k] >= _S[k + 1])
+                    break;
+
+                // swap values and columns if necessary
+                _S.swap(k, k + 1);
+
+                if (_computeV && (k < _n - 1))
+                    _V.swapColumns(k, k + 1);
+
+                if (_computeU && (k < _m - 1))
+                    _U.swapColumns(k, k + 1);
+
+                k++;
+            }
+            iter = 0;
+            p--;
+        } break; // end case 4
         }
     }
 }

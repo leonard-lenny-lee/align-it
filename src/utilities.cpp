@@ -5,24 +5,24 @@ Copyright 2012-2013 by Silicos-it, a division of Imacosi BVBA
 
 This file is part of Align-it.
 
-	Align-it is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Lesser General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+        Align-it is free software: you can redistribute it and/or modify
+        it under the terms of the GNU Lesser General Public License as published
+        by the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
 
-	Align-it is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Lesser General Public License for more details.
+        Align-it is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU Lesser General Public License for more details.
 
-	You should have received a copy of the GNU Lesser General Public License
-	along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
+        You should have received a copy of the GNU Lesser General Public License
+        along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
 
 Align-it can be linked against OpenBabel version 3 or the RDKit.
 
-	OpenBabel is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation version 2 of the License.
+        OpenBabel is free software; you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation version 2 of the License.
 
 ***********************************************************************/
 
@@ -38,14 +38,14 @@ Coordinate translate(Coordinate &p, Coordinate &t) {
 
 Coordinate rotate(Coordinate &p, SiMath::Matrix &U) {
     Coordinate n;
-    n.x = p.x * U[0][0] + p.y * U[0][1] + p.z *  U[0][2];
-    n.y = p.x * U[1][0] + p.y * U[1][1] + p.z *  U[1][2];
-    n.z = p.x * U[2][0] + p.y * U[2][1] + p.z *  U[2][2];
+    n.x = p.x * U[0][0] + p.y * U[0][1] + p.z * U[0][2];
+    n.y = p.x * U[1][0] + p.y * U[1][1] + p.z * U[1][2];
+    n.z = p.x * U[2][0] + p.y * U[2][1] + p.z * U[2][2];
     return n;
 }
 
 void normalise(Coordinate &p) {
-    double d = p.x*p.x + p.y*p.y + p.z*p.z;
+    double d = p.x * p.x + p.y * p.y + p.z * p.z;
     d = sqrt(d);
     p.x /= d;
     p.y /= d;
@@ -53,12 +53,10 @@ void normalise(Coordinate &p) {
     return;
 }
 
-double norm(Coordinate &p) {
-    return sqrt(p.x*p.x + p.y*p.y + p.z*p.z);
-}
+double norm(Coordinate &p) { return sqrt(p.x * p.x + p.y * p.y + p.z * p.z); }
 
 double dotProduct(Coordinate &p1, Coordinate &p2) {
-    return p1.x*p2.x + p1.y*p2.y + p1.z*p2.z;
+    return p1.x * p2.x + p1.y * p2.y + p1.z * p2.z;
 }
 
 Coordinate crossProduct(Coordinate &p1, Coordinate &p2) {
@@ -70,7 +68,7 @@ Coordinate crossProduct(Coordinate &p1, Coordinate &p2) {
 }
 
 double cosine(Coordinate &p1, Coordinate &p2) {
-    double c(p1.x*p2.x + p1.y*p2.y + p1.z*p2.z);
+    double c(p1.x * p2.x + p1.y * p2.y + p1.z * p2.z);
     c /= norm(p1);
     c /= norm(p2);
     return c;
@@ -78,25 +76,26 @@ double cosine(Coordinate &p1, Coordinate &p2) {
 
 double distance(Coordinate &p1, Coordinate &p2) {
     double d(0.0);
-    d += (p1.x - p2.x)*(p1.x - p2.x);
-    d += (p1.y - p2.y)*(p1.y - p2.y);
-    d += (p1.z - p2.z)*(p1.z - p2.z);
+    d += (p1.x - p2.x) * (p1.x - p2.x);
+    d += (p1.y - p2.y) * (p1.y - p2.y);
+    d += (p1.z - p2.z) * (p1.z - p2.z);
     return sqrt(d);
 }
 
 void normalise(SiMath::Vector &v) {
     double d(0.0);
-    for (unsigned int i = 0; i < 4; i++) d += v[i] * v[i];
+    for (unsigned int i = 0; i < 4; i++)
+        d += v[i] * v[i];
     v /= sqrt(d);
     return;
 }
 
 SiMath::Matrix quat2Rotation(SiMath::Vector &Q) {
-    double d1sq(Q[1]*Q[1]);
-    double d2sq(Q[2]*Q[2]);
-    double d3sq(Q[3]*Q[3]);
+    double d1sq(Q[1] * Q[1]);
+    double d2sq(Q[2] * Q[2]);
+    double d3sq(Q[3] * Q[3]);
 
-    SiMath::Matrix U(3,3);
+    SiMath::Matrix U(3, 3);
     U[0][0] = 1.0 - 2.0 * d2sq - 2.0 * d3sq;
     U[1][0] = 2.0 * (Q[1] * Q[2] + Q[0] * Q[3]);
     U[2][0] = 2.0 * (Q[1] * Q[3] - Q[0] * Q[2]);
@@ -115,9 +114,10 @@ SiMath::Matrix quat2Rotation(SiMath::Vector &Q) {
 void inverseHessian(SiMath::Matrix &H) {
     // define H = [H00 H01 | H10 H11]
     // R0 = inv(H00)
-    SiMath::Matrix R0(2,2);
+    SiMath::Matrix R0(2, 2);
     double d = (H[0][0] * H[1][1] - H[0][1] * H[1][0]);
-    if ( d > 1e-6 || d < -1e-6) d = 1.0 / d;
+    if (d > 1e-6 || d < -1e-6)
+        d = 1.0 / d;
 
     R0[0][0] = d * H[1][1];
     R0[1][1] = d * H[0][0];
@@ -125,25 +125,25 @@ void inverseHessian(SiMath::Matrix &H) {
     R0[1][0] = -d * H[1][0];
 
     // R1 = H10 * R0
-    SiMath::Matrix R1(2,2);
-    R1[0][0] = H[2][0]*R0[0][0] + H[2][1] * R0[1][0];
-    R1[0][1] = H[2][0]*R0[0][1] + H[2][1] * R0[1][1];
-    R1[1][0] = H[3][0]*R0[0][0] + H[3][1] * R0[1][0];
-    R1[1][1] = H[3][0]*R0[0][1] + H[3][1] * R0[1][1];
+    SiMath::Matrix R1(2, 2);
+    R1[0][0] = H[2][0] * R0[0][0] + H[2][1] * R0[1][0];
+    R1[0][1] = H[2][0] * R0[0][1] + H[2][1] * R0[1][1];
+    R1[1][0] = H[3][0] * R0[0][0] + H[3][1] * R0[1][0];
+    R1[1][1] = H[3][0] * R0[0][1] + H[3][1] * R0[1][1];
 
     // R2 = R0 * H01
-    SiMath::Matrix R2(2,2);
-    R2[0][0] = R0[0][0]*H[0][2] + R0[0][1] * H[1][2];
-    R2[0][1] = R0[0][0]*H[0][3] + R0[0][1] * H[1][3];
-    R2[1][0] = R0[1][0]*H[0][2] + R0[1][1] * H[1][2];
-    R2[1][1] = R0[1][0]*H[0][3] + R0[1][1] * H[1][3];
+    SiMath::Matrix R2(2, 2);
+    R2[0][0] = R0[0][0] * H[0][2] + R0[0][1] * H[1][2];
+    R2[0][1] = R0[0][0] * H[0][3] + R0[0][1] * H[1][3];
+    R2[1][0] = R0[1][0] * H[0][2] + R0[1][1] * H[1][2];
+    R2[1][1] = R0[1][0] * H[0][3] + R0[1][1] * H[1][3];
 
     // R3 = H10 * R1
-    SiMath::Matrix R3(2,2);
-    R3[0][0] = H[2][0]*R2[0][0] + H[2][1] * R2[1][0];
-    R3[0][1] = H[2][0]*R2[0][1] + H[2][1] * R2[1][1];
-    R3[1][0] = H[3][0]*R2[0][0] + H[3][1] * R2[1][0];
-    R3[1][1] = H[3][0]*R2[0][1] + H[3][1] * R2[1][1];
+    SiMath::Matrix R3(2, 2);
+    R3[0][0] = H[2][0] * R2[0][0] + H[2][1] * R2[1][0];
+    R3[0][1] = H[2][0] * R2[0][1] + H[2][1] * R2[1][1];
+    R3[1][0] = H[3][0] * R2[0][0] + H[3][1] * R2[1][0];
+    R3[1][1] = H[3][0] * R2[0][1] + H[3][1] * R2[1][1];
 
     // R3 = R3 - A11
     R3[0][0] -= H[2][2];
@@ -153,7 +153,8 @@ void inverseHessian(SiMath::Matrix &H) {
 
     // R3 = inv(R3)
     d = (R3[0][0] * R3[1][1] - R3[0][1] * R3[1][0]);
-    if ( d > 1e-6 || d < -1e-6 ) R3 /= d;
+    if (d > 1e-6 || d < -1e-6)
+        R3 /= d;
 
     // swap [0][0] with [1][1]
     d = R3[1][1];
@@ -177,7 +178,7 @@ void inverseHessian(SiMath::Matrix &H) {
     H[3][1] = R3[1][0] * R1[0][1] + R3[1][1] * R1[1][1];
 
     // R4 = R2 * H10
-    SiMath::Matrix R4(2,2);
+    SiMath::Matrix R4(2, 2);
     R4[0][0] = R2[0][0] * H[2][0] + R2[0][1] * H[3][0];
     R4[0][1] = R2[0][0] * H[2][1] + R2[0][1] * H[3][1];
     R4[1][0] = R2[1][0] * H[2][0] + R2[1][1] * H[3][0];
@@ -204,21 +205,20 @@ double VolumeOverlap(PharmacophorePoint &p1, PharmacophorePoint &p2, bool n) {
     r2 += (p1.point.z - p2.point.z) * (p1.point.z - p2.point.z);
     double vol(1.0);
     if (n) {
-        if(((p1.func == AROM) || (p1.func == HYBL))
-           && ((p2.func == AROM) || (p2.func == HYBL))
-           && ( p1.hasNormal )
-           && ( p2.hasNormal )) {
+        if (((p1.func == AROM) || (p1.func == HYBL)) &&
+            ((p2.func == AROM) || (p2.func == HYBL)) && (p1.hasNormal) &&
+            (p2.hasNormal)) {
             vol = fabs(cosine(p1.normal, p2.normal));
-        }
-        else if (((p1.func == HACC) || (p1.func == HDON) || (p1.func == HYBH))
-                && ((p2.func == HACC) || (p2.func == HDON) || (p2.func == HYBH))
-                && ( p1.hasNormal )
-                && ( p2.hasNormal )) {
+        } else if (((p1.func == HACC) || (p1.func == HDON) ||
+                    (p1.func == HYBH)) &&
+                   ((p2.func == HACC) || (p2.func == HDON) ||
+                    (p2.func == HYBH)) &&
+                   (p1.hasNormal) && (p2.hasNormal)) {
             vol = cosine(p1.normal, p2.normal);
         }
     }
-    vol *= GCI2 * pow(PI/(p1.alpha + p2.alpha), 1.5);
-    vol *= exp(-(p1.alpha * p2.alpha) * r2/(p1.alpha + p2.alpha));
+    vol *= GCI2 * pow(PI / (p1.alpha + p2.alpha), 1.5);
+    vol *= exp(-(p1.alpha * p2.alpha) * r2 / (p1.alpha + p2.alpha));
     return vol;
 }
 
@@ -228,25 +228,25 @@ double VolumeOverlap(PharmacophorePoint *p1, PharmacophorePoint *p2, bool n) {
     r2 += (p1->point.z - p2->point.z) * (p1->point.z - p2->point.z);
     double vol(1.0);
     if (n) {
-        if(((p1->func == AROM) || (p1->func == HYBL))
-           && ((p2->func == AROM) || (p2->func == HYBL))
-           && ( p1->hasNormal )
-           && ( p2->hasNormal )) {
+        if (((p1->func == AROM) || (p1->func == HYBL)) &&
+            ((p2->func == AROM) || (p2->func == HYBL)) && (p1->hasNormal) &&
+            (p2->hasNormal)) {
             vol = fabs(cosine(p1->normal, p2->normal));
-        }
-        else if (((p1->func == HACC) || (p1->func == HDON) || (p1->func == HYBH))
-                && ((p2->func == HACC) || (p2->func == HDON) || (p2->func == HYBH))
-                && ( p1->hasNormal )
-                && ( p2->hasNormal )) {
+        } else if (((p1->func == HACC) || (p1->func == HDON) ||
+                    (p1->func == HYBH)) &&
+                   ((p2->func == HACC) || (p2->func == HDON) ||
+                    (p2->func == HYBH)) &&
+                   (p1->hasNormal) && (p2->hasNormal)) {
             vol = cosine(p1->normal, p2->normal);
         }
     }
-    vol *= GCI2 * pow(PI/(p1->alpha + p2->alpha), 1.5);
-    vol *= exp(-(p1->alpha * p2->alpha) * r2/(p1->alpha + p2->alpha));
+    vol *= GCI2 * pow(PI / (p1->alpha + p2->alpha), 1.5);
+    vol *= exp(-(p1->alpha * p2->alpha) * r2 / (p1->alpha + p2->alpha));
     return vol;
 }
 
-void positionPharmacophore(Pharmacophore &pharm, SiMath::Matrix &U, SolutionInfo &s) {
+void positionPharmacophore(Pharmacophore &pharm, SiMath::Matrix &U,
+                           SolutionInfo &s) {
     // transpose of rotation matrix
     SiMath::Matrix rt = s.rotation2.transpose();
     for (int i(0); i < pharm.size(); ++i) {
@@ -285,7 +285,8 @@ void positionPharmacophore(Pharmacophore &pharm, SiMath::Matrix &U, SolutionInfo
     return;
 }
 
-void TransformPharmacophore(Pharmacophore &pharm, SiMath::Matrix &U, Coordinate &center1, Coordinate &center2) {
+void TransformPharmacophore(Pharmacophore &pharm, SiMath::Matrix &U,
+                            Coordinate &center1, Coordinate &center2) {
     for (int i(0); i < pharm.size(); ++i) {
         PharmacophorePoint pp(pharm[i]);
 
@@ -319,8 +320,8 @@ void positionMolecule(OpenBabel::OBMol *m, SiMath::Matrix &U, SolutionInfo &s) {
     // transpose of rotation matrix
     SiMath::Matrix rt = s.rotation2.transpose();
     Coordinate point;
-    std::vector<OpenBabel::OBAtom*>::iterator ai;
-    for (OpenBabel::OBAtom* a = m->BeginAtom(ai); a; a = m->NextAtom(ai)) {
+    std::vector<OpenBabel::OBAtom *>::iterator ai;
+    for (OpenBabel::OBAtom *a = m->BeginAtom(ai); a; a = m->NextAtom(ai)) {
         point.x = a->x();
         point.y = a->y();
         point.z = a->z();
@@ -338,24 +339,25 @@ void positionMolecule(OpenBabel::OBMol *m, SiMath::Matrix &U, SolutionInfo &s) {
     return;
 }
 
-void TransformMolecule(OpenBabel::OBMol *m, SiMath::Matrix &U, Coordinate &center1, Coordinate &center2) {
-   Coordinate point;
-   std::vector<OpenBabel::OBAtom*>::iterator ai;
-   for (OpenBabel::OBAtom* a = m->BeginAtom(ai); a; a = m->NextAtom(ai)) {
-       point.x = a->x();
-       point.y = a->y();
-       point.z = a->z();
+void TransformMolecule(OpenBabel::OBMol *m, SiMath::Matrix &U,
+                       Coordinate &center1, Coordinate &center2) {
+    Coordinate point;
+    std::vector<OpenBabel::OBAtom *>::iterator ai;
+    for (OpenBabel::OBAtom *a = m->BeginAtom(ai); a; a = m->NextAtom(ai)) {
+        point.x = a->x();
+        point.y = a->y();
+        point.z = a->z();
 
-       point.x -= center2.x;
-       point.y -= center2.y;
-       point.z -= center2.z;
-       point = rotate(point, U);
-       point.x += center1.x;
-       point.y += center1.y;
-       point.z += center1.z;
-       a->SetVector(point.x, point.y, point.z);
-   }
-   return;
+        point.x -= center2.x;
+        point.y -= center2.y;
+        point.z -= center2.z;
+        point = rotate(point, U);
+        point.x += center1.x;
+        point.y += center1.y;
+        point.z += center1.z;
+        a->SetVector(point.x, point.y, point.z);
+    }
+    return;
 }
 
 #else
@@ -367,7 +369,7 @@ void positionMolecule(RDKit::ROMol *m, SiMath::Matrix &U, SolutionInfo &s) {
     RDKit::Conformer &conf = m->getConformer();
     SiMath::Matrix rt = s.rotation2.transpose();
     Coordinate point;
-    for (unsigned int i =0; i < m->getNumAtoms(); ++i) {
+    for (unsigned int i = 0; i < m->getNumAtoms(); ++i) {
         RDGeom::Point3D p = conf.getAtomPos(i);
         point.x = p.x;
         point.y = p.y;
@@ -381,15 +383,15 @@ void positionMolecule(RDKit::ROMol *m, SiMath::Matrix &U, SolutionInfo &s) {
         point.x += s.center1.x;
         point.y += s.center1.y;
         point.z += s.center1.z;
-        conf.setAtomPos(i, RDGeom::Point3D(
-            point.x, point.y, point.z));
+        conf.setAtomPos(i, RDGeom::Point3D(point.x, point.y, point.z));
     }
 }
 
-void TransformMolecule(RDKit::ROMol *m, SiMath::Matrix &U, Coordinate &center1, Coordinate &center2) {
+void TransformMolecule(RDKit::ROMol *m, SiMath::Matrix &U, Coordinate &center1,
+                       Coordinate &center2) {
     RDKit::Conformer &conf = m->getConformer();
     Coordinate point;
-    for (unsigned int i =0; i < m->getNumAtoms(); ++i) {
+    for (unsigned int i = 0; i < m->getNumAtoms(); ++i) {
         RDGeom::Point3D p = conf.getAtomPos(i);
         point.x = p.x;
         point.y = p.y;
@@ -401,8 +403,7 @@ void TransformMolecule(RDKit::ROMol *m, SiMath::Matrix &U, Coordinate &center1, 
         point.x += center1.x;
         point.y += center1.y;
         point.z += center1.z;
-        conf.setAtomPos(i, RDGeom::Point3D(
-            point.x, point.y, point.z));
+        conf.setAtomPos(i, RDGeom::Point3D(point.x, point.y, point.z));
     }
 }
 

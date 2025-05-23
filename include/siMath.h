@@ -5,24 +5,24 @@ Copyright 2012-2013 by Silicos-it, a division of Imacosi BVBA
 
 This file is part of Align-it.
 
-	Align-it is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Lesser General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+        Align-it is free software: you can redistribute it and/or modify
+        it under the terms of the GNU Lesser General Public License as published
+        by the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
 
-	Align-it is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Lesser General Public License for more details.
+        Align-it is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU Lesser General Public License for more details.
 
-	You should have received a copy of the GNU Lesser General Public License
-	along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
+        You should have received a copy of the GNU Lesser General Public License
+        along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
 
 Align-it can be linked against OpenBabel version 3 or the RDKit.
 
-	OpenBabel is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation version 2 of the License.
+        OpenBabel is free software; you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation version 2 of the License.
 
 ***********************************************************************/
 
@@ -36,7 +36,7 @@ Align-it can be linked against OpenBabel version 3 or the RDKit.
 // Align-it
 #include <defines.h>
 
-#define ROUND(x) ((int) ((x) + 0.5))
+#define ROUND(x) ((int)((x) + 0.5))
 
 #ifndef min
 template <class T> inline T min(T x, T y) { return (x < y) ? x : y; }
@@ -57,25 +57,25 @@ namespace SiMath {
 inline double triangle(const double &a, const double &b) {
     double A(fabs(a)), B(fabs(b));
     if (A > B) {
-        return A * sqrt(1.0 + (B/A)*(B/A));
+        return A * sqrt(1.0 + (B / A) * (B / A));
     } else if (B == 0) {
         return 0;
     }
-    return B * sqrt(1.0 + (A/B)*(A/B));
+    return B * sqrt(1.0 + (A / B) * (A / B));
 }
 
 class Vector {
-private:
-    unsigned int _n;               ///< Number of data points in vector
-    std::vector<double> _pVector;  ///< std::vector to hold values
-public:
+  private:
+    unsigned int _n;              ///< Number of data points in vector
+    std::vector<double> _pVector; ///< std::vector to hold values
+  public:
     Vector() : _n(0), _pVector(0) {};
     explicit Vector(const unsigned int n) : _n(n), _pVector(n) {};
     Vector(const unsigned int n, const double &v) : _n(n), _pVector(n, v) {};
-    Vector(const unsigned int n, const double*);
-    explicit Vector(const std::vector<double>&);
+    Vector(const unsigned int n, const double *);
+    explicit Vector(const std::vector<double> &);
 
-    Vector(const Vector&);
+    Vector(const Vector &);
 
     ~Vector();
 
@@ -112,13 +112,11 @@ public:
     Vector operator-(const Vector &) const;
     Vector operator*(const Vector &) const;
     Vector operator/(const Vector &) const;
-    
+
     bool operator==(const Vector &) const;
     bool operator!=(const Vector &) const;
 
-    inline double &operator[](const unsigned int i) {
-        return _pVector[i];
-    };
+    inline double &operator[](const unsigned int i) { return _pVector[i]; };
     inline double operator[](const unsigned int i) const {
         return _pVector[i];
     };
@@ -127,21 +125,18 @@ public:
 
     double dotProd(const Vector &);
 
-    const double *getArrayPointer() const {
-        return &(_pVector[0]);
-    };
-    double *getArrayPointer() {
-        return &(_pVector[0]);
-    };
+    const double *getArrayPointer() const { return &(_pVector[0]); };
+    double *getArrayPointer() { return &(_pVector[0]); };
 };
 
 class Matrix {
-private:
+  private:
     unsigned int _nRows;
     unsigned int _nCols;
     double **_pMatrix;
-public:
-    Matrix() : _nRows(0), _nCols(0), _pMatrix(NULL){};
+
+  public:
+    Matrix() : _nRows(0), _nCols(0), _pMatrix(NULL) {};
     Matrix(const unsigned int, const unsigned int);
     Matrix(const unsigned int, const unsigned int, const double &);
     Matrix(const Matrix &);
@@ -169,32 +164,34 @@ public:
     void swapColumns(unsigned int, unsigned int);
     Matrix transpose(void);
 
-    Matrix &operator=(const Matrix&);
-    Matrix &operator=(const double&);
-    Matrix &operator+=(const double&);
-    Matrix &operator+=(const Matrix&);
-    Matrix &operator-=(const double&);
-    Matrix &operator-=(const Matrix&);
-    Matrix &operator*=(const double&);
-    Matrix &operator*=(const Matrix&);
-    Matrix &operator/=(const double&);
-    Matrix &operator/=(const Matrix&);
+    Matrix &operator=(const Matrix &);
+    Matrix &operator=(const double &);
+    Matrix &operator+=(const double &);
+    Matrix &operator+=(const Matrix &);
+    Matrix &operator-=(const double &);
+    Matrix &operator-=(const Matrix &);
+    Matrix &operator*=(const double &);
+    Matrix &operator*=(const Matrix &);
+    Matrix &operator/=(const double &);
+    Matrix &operator/=(const Matrix &);
     Matrix &operator-();
 
-    Matrix operator+(const Matrix&) const;
-    Matrix operator-(const Matrix&) const;
-    Matrix operator*(const Matrix&) const;
-    Matrix operator/(const Matrix&) const;
+    Matrix operator+(const Matrix &) const;
+    Matrix operator-(const Matrix &) const;
+    Matrix operator*(const Matrix &) const;
+    Matrix operator/(const Matrix &) const;
 
-    inline double * operator[] (const unsigned int i) { return _pMatrix[i]; };
-    inline const double * operator[] (const unsigned int i) const { return _pMatrix[i]; };
+    inline double *operator[](const unsigned int i) { return _pMatrix[i]; };
+    inline const double *operator[](const unsigned int i) const {
+        return _pMatrix[i];
+    };
 };
 
 Vector rowProduct(const Matrix &A, const Vector &U);
 Vector colProduct(const Vector &U, const Matrix &A);
 
 class SVD {
-public:
+  public:
     SVD(const Matrix &, bool bU = true, bool bV = true);
 
     Vector getSingularValues() { return _S; };
@@ -208,7 +205,7 @@ public:
 
     int rank();
 
-private:
+  private:
     int _m;
     int _n;
     Matrix _U;

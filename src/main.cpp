@@ -5,31 +5,31 @@ Copyright 2012-2013 by Silicos-it, a division of Imacosi BVBA
 
 This file is part of Align-it.
 
-	Align-it is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Lesser General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+        Align-it is free software: you can redistribute it and/or modify
+        it under the terms of the GNU Lesser General Public License as published
+        by the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
 
-	Align-it is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Lesser General Public License for more details.
+        Align-it is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU Lesser General Public License for more details.
 
-	You should have received a copy of the GNU Lesser General Public License
-	along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
+        You should have received a copy of the GNU Lesser General Public License
+        along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
 
 Align-it can be linked against OpenBabel version 3 or the RDKit.
 
-	OpenBabel is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation version 2 of the License.
+        OpenBabel is free software; you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation version 2 of the License.
 
 ***********************************************************************/
 
 // General
-#include <time.h>
-#include <stdlib.h>
 #include <iostream>
+#include <stdlib.h>
+#include <time.h>
 #include <vector>
 
 // Toolkit
@@ -43,24 +43,23 @@ Align-it can be linked against OpenBabel version 3 or the RDKit.
 #include <GraphMol/RWMol.h>
 #endif
 
-
 // Align-it
-#include <options.h>
-#include <logOut.h>
-#include <logScores.h>
-#include <logPharmacophores.h>
 #include <addBest.h>
-#include <parseCommandLine.h>
-#include <pharmacophore.h>
-#include <pharMerger.h>
-#include <printHeader.h>
-#include <printUsage.h>
-#include <printProgress.h>
-#include <getExt.h>
-#include <calcPharm.h>
-#include <result.h>
 #include <alignment.h>
+#include <calcPharm.h>
 #include <functionMapping.h>
+#include <getExt.h>
+#include <logOut.h>
+#include <logPharmacophores.h>
+#include <logScores.h>
+#include <options.h>
+#include <parseCommandLine.h>
+#include <pharMerger.h>
+#include <pharmacophore.h>
+#include <printHeader.h>
+#include <printProgress.h>
+#include <printUsage.h>
+#include <result.h>
 
 //*--------------------------------------------------------------------------*//
 PharMerger pharMerger;
@@ -68,7 +67,7 @@ PharMerger pharMerger;
 //*--------------------------------------------------------------------------*//
 //* MAIN                                                                MAIN *//
 //*--------------------------------------------------------------------------*//
-int main(int argc, char* argv[]){
+int main(int argc, char *argv[]) {
 
     // Initialise random number generator
     srandom(time(nullptr));
@@ -84,11 +83,11 @@ int main(int argc, char* argv[]){
             uo.funcGroupVec[HYBH] = true;
         }
     }
-    if (uo.version){
+    if (uo.version) {
         printHeader();
         exit(0);
     }
-    if (uo.help){
+    if (uo.help) {
         printUsage();
         exit(0);
     }
@@ -99,16 +98,22 @@ int main(int argc, char* argv[]){
 
     // Db file and pharmacophore out are mandatory elements
     if (uo.dbInpFile.empty()) {
-        mainErr("Missing database file. This is a required option (-d | --dbase).");
+        mainErr(
+            "Missing database file. This is a required option (-d | --dbase).");
     }
-    if (uo.pharmOutFile.empty() && uo.molOutFile.empty() && uo.scoreOutFile.empty()) {
-        mainErr("No output file defined. So there is actually no use to compute anything at all.");
+    if (uo.pharmOutFile.empty() && uo.molOutFile.empty() &&
+        uo.scoreOutFile.empty()) {
+        mainErr("No output file defined. So there is actually no use to "
+                "compute anything at all.");
     }
-    if ((uo.pharmOutFile.empty() && uo.scoreOutFile.empty()) && !uo.molOutFile.empty()) {
+    if ((uo.pharmOutFile.empty() && uo.scoreOutFile.empty()) &&
+        !uo.molOutFile.empty()) {
         mainErr("No file defined to write pharmacophore information.");
     }
-    if (uo.refInpFile.empty() && uo.pharmOutFile.empty() && uo.molOutFile.empty() && !uo.scoreOutFile.empty()) {
-        mainErr("Only score file requested when no reference is given. Unable to generate this output.");
+    if (uo.refInpFile.empty() && uo.pharmOutFile.empty() &&
+        uo.molOutFile.empty() && !uo.scoreOutFile.empty()) {
+        mainErr("Only score file requested when no reference is given. Unable "
+                "to generate this output.");
     }
 
     // Reference variables
@@ -120,7 +125,7 @@ int main(int argc, char* argv[]){
     int exclSize(0);
 
     // Database variables
-    std::vector<Result*> resList;
+    std::vector<Result *> resList;
     Pharmacophore dbPharm;
     std::string dbId;
     double dbVolume(0.0);
@@ -145,7 +150,7 @@ int main(int argc, char* argv[]){
         if (!uo.refInpFile.empty() && uo.refInpType != "phar") {
 #ifndef USE_RDKIT
             OpenBabel::OBMol m;
-            OpenBabel::OBConversion* reader = new OpenBabel::OBConversion();
+            OpenBabel::OBConversion *reader = new OpenBabel::OBConversion();
             reader->SetInFormat(reader->FindFormat(uo.refInpType));
             if (!reader->Read(&m, uo.refInpStream)) {
                 mainErr("Unable to read reference molecule");
@@ -155,8 +160,8 @@ int main(int argc, char* argv[]){
             delete reader;
             reader = nullptr;
 #else
-            RDKit::ForwardSDMolSupplier reader(
-                    uo.refInpStream, takeOwnership, sanitize, removeHs);
+            RDKit::ForwardSDMolSupplier reader(uo.refInpStream, takeOwnership,
+                                               sanitize, removeHs);
             std::unique_ptr<RDKit::ROMol> refmptr(reader.next());
             if (!refmptr) {
                 mainErr("Could not parse reference molecule");
@@ -193,19 +198,24 @@ int main(int argc, char* argv[]){
                 // extract overlap with exclusion spheres
                 for (unsigned int j(0); j < refPharm.size(); ++j) {
                     if (refPharm[j].func != EXCL) {
-                        refVolume -= VolumeOverlap(refPharm[i], refPharm[j], !uo.noNormal);
+                        refVolume -= VolumeOverlap(refPharm[i], refPharm[j],
+                                                   !uo.noNormal);
                     }
                 }
                 exclSize++;
             } else {
-                refVolume += VolumeOverlap(refPharm[i], refPharm[i], !uo.noNormal);
+                refVolume +=
+                    VolumeOverlap(refPharm[i], refPharm[i], !uo.noNormal);
             }
         }
         if (!uo.isQuiet) {
             std::cerr << "Reference pharmacophore " << refId << std::endl;
-            std::cerr << "   number of points:            " << refSize - exclSize << std::endl;
-            std::cerr << "   number of exclusion spheres: " << exclSize << std::endl;
-            std::cerr << "   total volume:                " << refVolume << std::endl;
+            std::cerr << "   number of points:            "
+                      << refSize - exclSize << std::endl;
+            std::cerr << "   number of exclusion spheres: " << exclSize
+                      << std::endl;
+            std::cerr << "   total volume:                " << refVolume
+                      << std::endl;
         }
     }
 
@@ -214,24 +224,24 @@ int main(int argc, char* argv[]){
     //----------------------------------------------------------------------------
 
     // local storage of the rotation matrix
-    SiMath::Matrix rotMat(3,3,0.0);
+    SiMath::Matrix rotMat(3, 3, 0.0);
     unsigned int molCount(0);
-    PharmacophoreReader* pharmReader = nullptr;
+    PharmacophoreReader *pharmReader = nullptr;
 #ifndef USE_RDKIT
-    OpenBabel::OBConversion* molReader = nullptr;
+    OpenBabel::OBConversion *molReader = nullptr;
 #else
-    RDKit::ForwardSDMolSupplier* molReader = nullptr;
+    RDKit::ForwardSDMolSupplier *molReader = nullptr;
 #endif
     if (uo.dbInpType == "phar") {
         pharmReader = new PharmacophoreReader();
     } else if (!uo.dbInpType.empty() && (uo.dbInpType != "phar")) {
 #ifndef USE_RDKIT
         molReader = new OpenBabel::OBConversion();
-		molReader->SetInFormat(molReader->FindFormat(uo.dbInpType));
-      	molReader->SetInStream(uo.dbInpStream);
+        molReader->SetInFormat(molReader->FindFormat(uo.dbInpType));
+        molReader->SetInStream(uo.dbInpStream);
 #else
-       molReader = new RDKit::ForwardSDMolSupplier(
-                uo.dbInpStream, takeOwnership, sanitize, removeHs);
+        molReader = new RDKit::ForwardSDMolSupplier(
+            uo.dbInpStream, takeOwnership, sanitize, removeHs);
 #endif
     } else {
         mainErr("Unknown format of db file.");
@@ -258,9 +268,9 @@ int main(int argc, char* argv[]){
             }
 #else
             if (molReader->atEnd()) {
-                    done = true;
-                    break;
-                } else {
+                done = true;
+                break;
+            } else {
                 std::unique_ptr<RDKit::ROMol> dbmptr(molReader->next());
                 if (!dbmptr) {
                     continue;
@@ -291,7 +301,7 @@ int main(int argc, char* argv[]){
         }
 
         ++molCount;
-        if (!uo.isQuiet ) {
+        if (!uo.isQuiet) {
             if ((molCount % 10) == 0) {
                 std::cerr << "." << std::flush;
             }
@@ -306,7 +316,7 @@ int main(int argc, char* argv[]){
             if (!(uo.isQuiet)) {
                 printProgress(molCount);
             }
-            if( !uo.pharmOutFile.empty()) {
+            if (!uo.pharmOutFile.empty()) {
                 uo.pharmOutWriter->write(dbPharm, uo.pharmOutStream, dbId);
             }
             continue;
@@ -327,14 +337,14 @@ int main(int argc, char* argv[]){
 
         // Create a result structure
         Result res;
-        res.refId           = refId;
-        res.refVolume       = refVolume;
-        res.dbId            = dbId;
-        res.dbVolume        = dbVolume;
-        res.overlapVolume   = 0.0;
-        res.exclVolume      = 0.0;
-        res.resMol          = m;
-        res.resPharSize     = 0;
+        res.refId = refId;
+        res.refVolume = refVolume;
+        res.dbId = dbId;
+        res.dbVolume = dbVolume;
+        res.overlapVolume = 0.0;
+        res.exclVolume = 0.0;
+        res.resMol = m;
+        res.resPharSize = 0;
 
         if (uo.scoreOnly) {
             FunctionMapping funcMap(&refPharm, &dbPharm, uo.epsilon);
@@ -345,29 +355,33 @@ int main(int argc, char* argv[]){
             while (!fMap.empty()) {
                 double newVol(0.0);
                 double exclVol(0.0);
-                for (PharmacophoreMap::iterator itP = fMap.begin(); itP != fMap.end(); ++itP) {
+                for (PharmacophoreMap::iterator itP = fMap.begin();
+                     itP != fMap.end(); ++itP) {
                     if ((itP->first)->func == EXCL) {
-                        exclVol += VolumeOverlap((itP->first), (itP->second), !uo.noNormal);
-                    } else if (((itP->first)->func == (itP->second)->func ) ||
-                             (((itP->first)->func == HYBH ||
-                               (itP->first)->func == HDON ||
-                               (itP->first)->func == HACC)
-                              && ((itP->second)->func == HDON ||
-                                  (itP->second)->func == HACC ||
-                                  (itP->second)->func == HYBH))
-                             || (((itP->first)->func == HYBL ||
-                                  (itP->first)->func == AROM ||
-                                  (itP->first)->func == LIPO)
-                                 && ((itP->second)->func == AROM ||
-                                     (itP->second)->func == LIPO ||
-                                     (itP->second)->func == HYBL))) {
-                        newVol += VolumeOverlap((itP->first),(itP->second), !uo.noNormal);
+                        exclVol += VolumeOverlap((itP->first), (itP->second),
+                                                 !uo.noNormal);
+                    } else if (((itP->first)->func == (itP->second)->func) ||
+                               (((itP->first)->func == HYBH ||
+                                 (itP->first)->func == HDON ||
+                                 (itP->first)->func == HACC) &&
+                                ((itP->second)->func == HDON ||
+                                 (itP->second)->func == HACC ||
+                                 (itP->second)->func == HYBH)) ||
+                               (((itP->first)->func == HYBL ||
+                                 (itP->first)->func == AROM ||
+                                 (itP->first)->func == LIPO) &&
+                                ((itP->second)->func == AROM ||
+                                 (itP->second)->func == LIPO ||
+                                 (itP->second)->func == HYBL))) {
+                        newVol += VolumeOverlap((itP->first), (itP->second),
+                                                !uo.noNormal);
                     }
                 }
                 if ((newVol - exclVol) > volBest) {
                     res.resPhar.clear();
                     res.resPharSize = 0;
-                    for (PharmacophoreMap::iterator itP = fMap.begin(); itP != fMap.end(); ++itP) {
+                    for (PharmacophoreMap::iterator itP = fMap.begin();
+                         itP != fMap.end(); ++itP) {
                         // add point to resulting pharmacophore
                         PharmacophorePoint p(itP->second);
                         (res.resPhar).push_back(p);
@@ -399,7 +413,6 @@ int main(int argc, char* argv[]){
             int mapSize(fMap.size());
             int maxSize = mapSize - 3;
 
-
             while (!fMap.empty()) {
                 int msize = fMap.size();
                 // add the exclusion spheres to the alignment procedure
@@ -412,19 +425,22 @@ int main(int argc, char* argv[]){
                             if (dbPharm[j].func == EXCL) {
                                 continue;
                             }
-                            fMap.insert(std::make_pair(&(refPharm[i]), &(dbPharm[j])));
+                            fMap.insert(
+                                std::make_pair(&(refPharm[i]), &(dbPharm[j])));
                         }
                     }
                 }
-                // Only align if the expected score has any chance of being larger
-                // than best score so far
-                if ((msize > maxSize)
-                    && (((double) msize / (refSize - exclSize + dbSize - msize)) > bestScore)) {
+                // Only align if the expected score has any chance of being
+                // larger than best score so far
+                if ((msize > maxSize) &&
+                    (((double)msize / (refSize - exclSize + dbSize - msize)) >
+                     bestScore)) {
                     Alignment align(fMap);
                     SolutionInfo r = align.align(!uo.noNormal);
                     if (best.volume < r.volume) {
                         best = r;
-                        bestScore = best.volume / (refVolume + dbVolume - best.volume);
+                        bestScore =
+                            best.volume / (refVolume + dbVolume - best.volume);
                         bestMap = fMap;
                         mapSize = msize;
                     }
@@ -448,22 +464,27 @@ int main(int argc, char* argv[]){
             // Update result
             res.info = best;
 
-            // Compute overlap volume between exclusion spheres and pharmacophore points
+            // Compute overlap volume between exclusion spheres and
+            // pharmacophore points
             for (int i(0); i < refSize; ++i) {
                 if (refPharm[i].func != EXCL) {
                     continue;
                 }
                 for (int j(0); j < dbSize; ++j) {
-                    res.exclVolume += VolumeOverlap(refPharm[i], dbPharm[j], !uo.noNormal);
+                    res.exclVolume +=
+                        VolumeOverlap(refPharm[i], dbPharm[j], !uo.noNormal);
                 }
             }
             // make copy of the best map and compute the volume overlap
-            for (PharmacophoreMap::iterator itP = bestMap.begin(); itP != bestMap.end(); ++itP) {
-                if (((itP->first)->func == EXCL) || ((itP->second)->func == EXCL)) {
+            for (PharmacophoreMap::iterator itP = bestMap.begin();
+                 itP != bestMap.end(); ++itP) {
+                if (((itP->first)->func == EXCL) ||
+                    ((itP->second)->func == EXCL)) {
                     continue;
                 }
                 // compute overlap
-                res.overlapVolume += VolumeOverlap(itP->first, itP->second, !uo.noNormal);
+                res.overlapVolume +=
+                    VolumeOverlap(itP->first, itP->second, !uo.noNormal);
                 // add point to resulting pharmacophore
                 PharmacophorePoint p(itP->second);
                 (res.resPhar).push_back(p);
@@ -473,20 +494,21 @@ int main(int argc, char* argv[]){
         // update scores
         res.info.volume = res.overlapVolume - res.exclVolume;
         if (res.info.volume > 0.0) {
-            res.tanimoto = res.info.volume / (res.refVolume + res.dbVolume - res.info.volume);
+            res.tanimoto = res.info.volume /
+                           (res.refVolume + res.dbVolume - res.info.volume);
             res.tversky_ref = res.info.volume / res.refVolume;
             res.tversky_db = res.info.volume / res.dbVolume;
         }
         switch (uo.rankby) {
-            case TANIMOTO:
-                res.rankbyScore = res.tanimoto;
-                break;
-            case TVERSKY_REF:
-                res.rankbyScore = res.tversky_ref;
-                break;
-            case TVERSKY_DB:
-                res.rankbyScore = res.tversky_db;
-                break;
+        case TANIMOTO:
+            res.rankbyScore = res.tanimoto;
+            break;
+        case TVERSKY_REF:
+            res.rankbyScore = res.tversky_ref;
+            break;
+        case TVERSKY_DB:
+            res.rankbyScore = res.tversky_db;
+            break;
         }
 
         //-------------------------------------------------------
@@ -525,9 +547,9 @@ int main(int argc, char* argv[]){
     //----------------------------------------------------------------------------
 
     if (uo.best != 0) {
-        std::vector<Result*>::iterator itR;
+        std::vector<Result *>::iterator itR;
         for (itR = resList.begin(); itR != resList.end(); ++itR) {
-            Result* res(*itR);
+            Result *res(*itR);
             if (!uo.molOutFile.empty()) {
                 logOut(res, uo);
             }
@@ -546,16 +568,17 @@ int main(int argc, char* argv[]){
         if (uo.refInpFile.empty()) {
             std::cerr << std::endl;
             std::cerr << "Processed " << molCount << " molecules";
-            double tt = (double)(clock() - t0 )/CLOCKS_PER_SEC;
+            double tt = (double)(clock() - t0) / CLOCKS_PER_SEC;
             std::cerr << " in " << tt << " seconds (";
-            std::cerr << molCount/tt << " molecules per second)." << std::endl;
-        }
-        else {
+            std::cerr << molCount / tt << " molecules per second)."
+                      << std::endl;
+        } else {
             std::cerr << std::endl;
             std::cerr << "Processed " << molCount << " molecules" << std::endl;
-            double tt = (double)(clock() - t0 )/CLOCKS_PER_SEC;
+            double tt = (double)(clock() - t0) / CLOCKS_PER_SEC;
             std::cerr << molCount << " alignments in " << tt << " seconds (";
-            std::cerr << molCount/tt << " alignments per second)." << std::endl;
+            std::cerr << molCount / tt << " alignments per second)."
+                      << std::endl;
         }
     }
     exit(0);

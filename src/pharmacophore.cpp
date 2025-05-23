@@ -5,24 +5,24 @@ Copyright 2012-2013 by Silicos-it, a division of Imacosi BVBA
 
 This file is part of Align-it.
 
-	Align-it is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Lesser General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+        Align-it is free software: you can redistribute it and/or modify
+        it under the terms of the GNU Lesser General Public License as published
+        by the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
 
-	Align-it is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Lesser General Public License for more details.
+        Align-it is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU Lesser General Public License for more details.
 
-	You should have received a copy of the GNU Lesser General Public License
-	along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
+        You should have received a copy of the GNU Lesser General Public License
+        along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
 
 Align-it can be linked against OpenBabel version 3 or the RDKit.
 
-	OpenBabel is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation version 2 of the License.
+        OpenBabel is free software; you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation version 2 of the License.
 
 ***********************************************************************/
 
@@ -49,7 +49,7 @@ PharmacophorePoint::PharmacophorePoint(const PharmacophorePoint &p) {
     hasNormal = p.hasNormal;
 }
 
-PharmacophorePoint::PharmacophorePoint(const PharmacophorePoint * p) {
+PharmacophorePoint::PharmacophorePoint(const PharmacophorePoint *p) {
     point = p->point;
     func = p->func;
     alpha = p->alpha;
@@ -60,7 +60,8 @@ PharmacophorePoint::PharmacophorePoint(const PharmacophorePoint * p) {
 PharmacophoreReader::PharmacophoreReader(void) {}
 PharmacophoreReader::~PharmacophoreReader(void) {}
 
-Pharmacophore PharmacophoreReader::read(std::ifstream *_input, std::string &name) {
+Pharmacophore PharmacophoreReader::read(std::ifstream *_input,
+                                        std::string &name) {
     Pharmacophore pharmacophore;
     pharmacophore.clear();
     if (!*_input) {
@@ -73,7 +74,8 @@ Pharmacophore PharmacophoreReader::read(std::ifstream *_input, std::string &name
     getline(*_input, line);
 
     while (line != "$$$$") {
-        if (line[0]=='#') continue;
+        if (line[0] == '#')
+            continue;
         PharmacophorePoint p;
         auto lineList = stringTokenizer(line, "\t");
         std::vector<std::string> lineVec;
@@ -93,15 +95,42 @@ Pharmacophore PharmacophoreReader::read(std::ifstream *_input, std::string &name
             }
         }
         bool isOk(false);
-        if (lineVec[0] == "AROM") { isOk = true; p.func = AROM; }
-        if (lineVec[0] == "HDON") { isOk = true; p.func = HDON; }
-        if (lineVec[0] == "HACC") { isOk = true; p.func = HACC; }
-        if (lineVec[0] == "LIPO") { isOk = true; p.func = LIPO; }
-        if (lineVec[0] == "POSC") { isOk = true; p.func = POSC; }
-        if (lineVec[0] == "NEGC") { isOk = true; p.func = NEGC; }
-        if (lineVec[0] == "HYBH") { isOk = true; p.func = HYBH; }
-        if (lineVec[0] == "HYBL") { isOk = true; p.func = HYBL; }
-        if (lineVec[0] == "EXCL") { isOk = true; p.func = EXCL; }
+        if (lineVec[0] == "AROM") {
+            isOk = true;
+            p.func = AROM;
+        }
+        if (lineVec[0] == "HDON") {
+            isOk = true;
+            p.func = HDON;
+        }
+        if (lineVec[0] == "HACC") {
+            isOk = true;
+            p.func = HACC;
+        }
+        if (lineVec[0] == "LIPO") {
+            isOk = true;
+            p.func = LIPO;
+        }
+        if (lineVec[0] == "POSC") {
+            isOk = true;
+            p.func = POSC;
+        }
+        if (lineVec[0] == "NEGC") {
+            isOk = true;
+            p.func = NEGC;
+        }
+        if (lineVec[0] == "HYBH") {
+            isOk = true;
+            p.func = HYBH;
+        }
+        if (lineVec[0] == "HYBL") {
+            isOk = true;
+            p.func = HYBL;
+        }
+        if (lineVec[0] == "EXCL") {
+            isOk = true;
+            p.func = EXCL;
+        }
         if (!isOk) {
             _skipPharmacophore(_input);
             mainWar("Incorrect functional group:: " + line);
@@ -113,8 +142,12 @@ Pharmacophore PharmacophoreReader::read(std::ifstream *_input, std::string &name
         p.point.z = strtod(lineVec[3].c_str(), NULL);
         p.alpha = strtod(lineVec[4].c_str(), NULL);
 
-        if (lineVec[5] == "1") { p.hasNormal = true; }
-        if (lineVec[5] == "0") { p.hasNormal = false; }
+        if (lineVec[5] == "1") {
+            p.hasNormal = true;
+        }
+        if (lineVec[5] == "0") {
+            p.hasNormal = false;
+        }
 
         p.normal.x = strtod(lineVec[6].c_str(), NULL);
         p.normal.y = strtod(lineVec[7].c_str(), NULL);
@@ -130,7 +163,8 @@ void PharmacophoreReader::_skipPharmacophore(std::ifstream *_input) {
     std::string line;
     getline(*_input, line);
     while (line != "$$$$") {
-        if (_input->eof()) return;
+        if (_input->eof())
+            return;
         getline(*_input, line);
     }
 }
@@ -138,21 +172,41 @@ void PharmacophoreReader::_skipPharmacophore(std::ifstream *_input) {
 PharmacophoreWriter::PharmacophoreWriter(void) {}
 PharmacophoreWriter::~PharmacophoreWriter(void) {}
 
-void PharmacophoreWriter::write(Pharmacophore &p, std::ofstream *os, const std::string &name) {
+void PharmacophoreWriter::write(Pharmacophore &p, std::ofstream *os,
+                                const std::string &name) {
     *os << name << std::endl;
     Pharmacophore::iterator itP;
     for (itP = p.begin(); itP != p.end(); ++itP) {
         switch (itP->func) {
-            case AROM: *os << "AROM\t"; break;
-            case HDON: *os << "HDON\t"; break;
-            case HACC: *os << "HACC\t"; break;
-            case LIPO: *os << "LIPO\t"; break;
-            case POSC: *os << "POSC\t"; break;
-            case NEGC: *os << "NEGC\t"; break;
-            case HYBH: *os << "HYBH\t"; break;
-            case HYBL: *os << "HYBL\t"; break;
-            case EXCL: *os << "EXCL\t"; break;
-            case UNDEF: break;
+        case AROM:
+            *os << "AROM\t";
+            break;
+        case HDON:
+            *os << "HDON\t";
+            break;
+        case HACC:
+            *os << "HACC\t";
+            break;
+        case LIPO:
+            *os << "LIPO\t";
+            break;
+        case POSC:
+            *os << "POSC\t";
+            break;
+        case NEGC:
+            *os << "NEGC\t";
+            break;
+        case HYBH:
+            *os << "HYBH\t";
+            break;
+        case HYBL:
+            *os << "HYBL\t";
+            break;
+        case EXCL:
+            *os << "EXCL\t";
+            break;
+        case UNDEF:
+            break;
         }
         Coordinate c(itP->point);
         *os << c.x << '\t' << c.y << '\t' << c.z << '\t';

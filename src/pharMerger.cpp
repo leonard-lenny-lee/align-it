@@ -5,24 +5,24 @@ Copyright 2012-2013 by Silicos-it, a division of Imacosi BVBA
 
 This file is part of Align-it.
 
-	Align-it is free software: you can redistribute it and/or modify
-	it under the terms of the GNU Lesser General Public License as published
-	by the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+        Align-it is free software: you can redistribute it and/or modify
+        it under the terms of the GNU Lesser General Public License as published
+        by the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
 
-	Align-it is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU Lesser General Public License for more details.
+        Align-it is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU Lesser General Public License for more details.
 
-	You should have received a copy of the GNU Lesser General Public License
-	along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
+        You should have received a copy of the GNU Lesser General Public License
+        along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
 
 Align-it can be linked against OpenBabel version 3 or the RDKit.
 
-	OpenBabel is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation version 2 of the License.
+        OpenBabel is free software; you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation version 2 of the License.
 
 ***********************************************************************/
 
@@ -46,8 +46,9 @@ void PharMerger::merge(Pharmacophore &phar) {
         }
         Group g;
         g.insert(i);
-        for (int j = i+1; j < n ; ++j) {
-            if (phar[i].func != phar[j].func) continue;
+        for (int j = i + 1; j < n; ++j) {
+            if (phar[i].func != phar[j].func)
+                continue;
             if (VolumeOverlap(phar[i], phar[j], false) > _threshold) {
                 g.insert(j);
             }
@@ -57,8 +58,10 @@ void PharMerger::merge(Pharmacophore &phar) {
     for (itL1 = list1.begin(); itL1 != list1.end(); ++itL1) {
         bool partOf(false);
         for (itL2 = list1.begin(); itL2 != list1.end(); ++itL2) {
-            if (itL1 == itL2) continue;
-            if (includes(itL2->begin(), itL2->end(), itL1->begin(), itL1->end())) {
+            if (itL1 == itL2)
+                continue;
+            if (includes(itL2->begin(), itL2->end(), itL1->begin(),
+                         itL1->end())) {
                 partOf = true;
                 break;
             }
@@ -79,12 +82,12 @@ void PharMerger::merge(Pharmacophore &phar) {
             (pp.point).x += (phar[*itG].point).x;
             (pp.point).y += (phar[*itG].point).y;
             (pp.point).z += (phar[*itG].point).z;
-            sigma += _deltaSigma/phar[*itG].alpha;
+            sigma += _deltaSigma / phar[*itG].alpha;
         }
         (pp.point).x /= itL1->size();
         (pp.point).y /= itL1->size();
         (pp.point).z /= itL1->size();
-        pp.alpha = 1.0/sigma;
+        pp.alpha = 1.0 / sigma;
         p.push_back(pp);
     }
     phar = p;
