@@ -52,7 +52,7 @@ else(NOT BUILD_RDKIT_SUPPORT)  # RDKit
     message(STATUS "Building Align-it against RDKit")
     add_definitions(-DUSE_RDKIT)
     find_package(RDKit REQUIRED)
-    set(RDKIT_INCLUDE_DIR $ENV{CONDA_PREFIX}/include)
+    set(RDKIT_INCLUDE_DIR $ENV{CONDA_PREFIX}/include/rdkit)
     file(GLOB RDKIT_LIBRARIES "${CONDA_LIB_DIR}/libRDKit*.dylib")
     find_package(Threads)
     set(RDKit_THREAD_LIBS Threads::Threads)
@@ -81,7 +81,7 @@ message("Installation directory of executable: ${CMAKE_INSTALL_PREFIX}/bin")
 if(BUILD_PYTHON_SUPPORT)
     if(NOT Python3_EXECUTABLE)  # Install Python into virtual environments, instead of globally
         execute_process(
-            COMMAND "which python"
+            COMMAND which python
             OUTPUT_VARIABLE Python3_EXECUTABLE
             OUTPUT_STRIP_TRAILING_WHITESPACE
         )
