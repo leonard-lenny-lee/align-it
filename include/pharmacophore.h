@@ -54,19 +54,30 @@ enum FuncGroup {
     HYBL,  ///< Hybrid Type: AROM + LIPO
     EXCL,  ///< Exclusion sphere
     UNDEF, ///< Undefined value (typically used for initialisation)
+    ATTA,  ///< R-group attachment point
 };
 
-const std::string funcName[10] = {
+const std::string funcName[11] = {
     "SILICOS::PHARAO::AROM", "SILICOS::PHARAO::HDON", "SILICOS::PHARAO::HACC",
     "SILICOS::PHARAO::LIPO", "SILICOS::PHARAO::POSC", "SILICOS::PHARAO::NEGC",
     "SILICOS::PHARAO::HYBH", "SILICOS::PHARAO::HYBL", "SILICOS::PHARAO::EXCL",
-    "SILICOS::PHARAO::UNDEF"};
+    "SILICOS::PHARAO::UNDEF", "SILICOS::PHARAO::ATTA"};
 
-const bool funcHasNormal[10] = {
-    true, true, true, false, false, false, true, true, false, false,
+const bool funcHasNormal[11] = {
+    true,  // AROM
+    true,  // HDON
+    true,  // HACC
+    false, // LIPO
+    false, // POSC
+    false, // NEGC
+    true,  // HYBH
+    true,  // HYBL
+    false, // EXCL
+    false, // UNDEF
+    true,  // ATTA
 };
 
-const double funcSigma[10] = {
+const double funcSigma[11] = {
     0.7, // AROM
     1.0, // HDON
     1.0, // HACC
@@ -77,6 +88,7 @@ const double funcSigma[10] = {
     0.7, // HYBL
     1.6, // EXCL
     1.0, // UNDEF
+    1.0, // ATTA
 };
 
 class PharmacophorePoint {

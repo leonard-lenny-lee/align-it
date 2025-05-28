@@ -246,8 +246,7 @@ void hAccFuncCalc(RDKit::ROMol *mol, Pharmacophore *pharmacophore) {
     for (auto atom : mol->atoms()) {
         if (atom->getAtomicNum() == 7 || atom->getAtomicNum() == 8) {
             if (atom->getFormalCharge() <= 0) {
-                if (_hAccDelocalized(atom) ||
-                    _hAccCalcAccSurf(atom, conf) < 0.02) {
+                if (_hAccDelocalized(atom)) {
                     continue;
                 }
                 PharmacophorePoint p;

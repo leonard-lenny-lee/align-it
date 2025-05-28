@@ -46,6 +46,8 @@ Pharmacophore calcPharmacophore(Molecule &mol, bool calcArom, bool calcHDon,
         chargeFuncCalc(&mol, &pharm);
     if (calcHybrid)
         hybridCalc(&mol, &pharm);
+    if (true)
+        attaFuncCalc(&mol, &pharm);
     return pharm;
 }
 

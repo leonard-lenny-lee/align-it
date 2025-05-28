@@ -47,6 +47,7 @@ using Molecule = RDKit::ROMol;
 #include <lipoFuncCalc.h>
 #include <options.h>
 #include <pharmacophore.h>
+#include <attaFuncCalc.h>
 
 void calcPharm(Molecule *, Pharmacophore *, const Options &);
 

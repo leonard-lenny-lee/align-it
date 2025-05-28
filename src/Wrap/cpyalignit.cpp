@@ -28,6 +28,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "alignLib.h"
 #include "config.h"
+#include "pharmacophore.h"
 
 namespace python = boost::python;
 using namespace RDKit;
@@ -101,7 +102,8 @@ void wrap_pyalignit() {
         .value("HYBH", FuncGroup::HYBH)
         .value("HYBL", FuncGroup::HYBL)
         .value("EXCL", FuncGroup::EXCL)
-        .value("UNDEF", FuncGroup::UNDEF);
+        .value("UNDEF", FuncGroup::UNDEF)
+        .value("ATTA", FuncGroup::ATTA);
 
     // PharmacophorePoint (represents a functional group)
     python::class_<PharmacophorePoint>("PharmacophorePoint")

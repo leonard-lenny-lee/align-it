@@ -47,5 +47,8 @@ void calcPharm(Molecule *m, Pharmacophore *p, const Options &uo) {
     if (uo.funcGroupVec[HYBH] || uo.funcGroupVec[HYBL]) {
         hybridCalc(m, p);
     }
+    if (true) {  // Placeholder
+        attaFuncCalc(m, p);
+    }
     return;
 }
