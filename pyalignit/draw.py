@@ -18,22 +18,22 @@ except ImportError:
 
 
 PHARM_COLORS = {
-    FuncGroup.AROM: '#ffa500',  # orange
-    FuncGroup.HDON: '#ff00ff',  # magenta
-    FuncGroup.HACC: '#00ff00',  # green
-    FuncGroup.LIPO: '#00ffff',  # cyan
-    FuncGroup.POSC: '#0000ff',  # blue
-    FuncGroup.NEGC: '#ff0000',  # red
-    FuncGroup.HYBH: '#964b00',  # brown
-    FuncGroup.HYBL: '#cbd123',  # yellow
-    FuncGroup.EXCL: '#808080',  # grey
-    FuncGroup.UNDEF: '#0f0f0f'  # black
+    FuncGroup.AROM: "#ffa500",  # orange
+    FuncGroup.HDON: "#ff00ff",  # magenta
+    FuncGroup.HACC: "#00ff00",  # green
+    FuncGroup.LIPO: "#00ffff",  # cyan
+    FuncGroup.POSC: "#0000ff",  # blue
+    FuncGroup.NEGC: "#ff0000",  # red
+    FuncGroup.HYBH: "#964b00",  # brown
+    FuncGroup.HYBL: "#cbd123",  # yellow
+    FuncGroup.EXCL: "#808080",  # grey
+    FuncGroup.UNDEF: "#0f0f0f",  # black
 }
 
 
 def draw_pharmacophore(pharmacophore, ax=None):
     """Draw pharmacophore points using matplotlib.
-    
+
     Parameters
     ----------
     pharmacophore : Pharmacophore
@@ -47,12 +47,12 @@ def draw_pharmacophore(pharmacophore, ax=None):
 
     """
     if not HAS_MATPLOTLIB:
-        raise ValueError('Drawing requires matplotlib')
+        raise ValueError("Drawing requires matplotlib")
     if ax is None:
-        ax = plt.gca(projection='3d')
+        ax = plt.gca(projection="3d")
     else:
-        if ax.name != '3d':
-            raise ValueError('Axes must be 3-dimensional')
+        if ax.name != "3d":
+            raise ValueError("Axes must be 3-dimensional")
     for point in pharmacophore:
         _draw_pharmacophore_point(point, ax)
     _set_axes_equal(ax)
@@ -61,7 +61,7 @@ def draw_pharmacophore(pharmacophore, ax=None):
 
 def _draw_pharmacophore_point(p, ax):
     center = [p.point.x, p.point.y, p.point.z]
-    sph = _wireframe_sphere(center, 1.0/p.alpha)
+    sph = _wireframe_sphere(center, 1.0 / p.alpha)
     alpha = 0.5 if p.func != FuncGroup.EXCL else 0.2
     color = PHARM_COLORS[p.func]
     ax.plot_wireframe(*sph, color=color, alpha=alpha)
@@ -69,8 +69,8 @@ def _draw_pharmacophore_point(p, ax):
 
 def _wireframe_sphere(center, radius, n_meridians=20, n_latitude=None):
     if n_latitude is None:
-        n_latitude = max(n_meridians/2, 4)
-    u, v = np.mgrid[0:2*np.pi:n_meridians*1j, 0:np.pi:n_latitude*1j]
+        n_latitude = max(n_meridians / 2, 4)
+    u, v = np.mgrid[0 : 2 * np.pi : n_meridians * 1j, 0 : np.pi : n_latitude * 1j]
     sphere_x = center[0] + radius * np.cos(u) * np.sin(v)
     sphere_y = center[1] + radius * np.sin(u) * np.sin(v)
     sphere_z = center[2] + radius * np.cos(v)

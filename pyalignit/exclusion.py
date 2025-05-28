@@ -15,18 +15,22 @@ DEFAULT_EXCL_ALPHA = 0.7
 
 
 def create_exclusion_spheres(
-    pharmacophore, receptor, ligand=None, cutoff=4.5,
-    receptor_confid=-1, ligand_confid=-1
+    pharmacophore,
+    receptor,
+    ligand=None,
+    cutoff=4.5,
+    receptor_confid=-1,
+    ligand_confid=-1,
 ):
     """Create and add exclusion spheres to a pharmacophore.
 
     Exclusion spheres are added to the Pharmacophore object,
     created from each receptor atom. If a ligand is also
-    provided exclusion spheres are only built from receptor 
+    provided exclusion spheres are only built from receptor
     atoms within a distance threshold from any ligand atom
     (default = 4.5A). The provided pharmacophore is modified
-    inplace. 
-    
+    inplace.
+
     Parameters
     ----------
     pharmacophore : Pharmacophore
@@ -40,7 +44,7 @@ def create_exclusion_spheres(
         a distance threshold, `cutoff`, from any ligand atom are
         used to build exclusion spheres.
     cutoff : float, default=4.5
-        Distance cutoff, used for distance based receptor atom 
+        Distance cutoff, used for distance based receptor atom
         filtering when a ligand is also provided.
     receptor_confid : int, default=-1
         Conformer ID to use for the provided receptor.
@@ -52,7 +56,7 @@ def create_exclusion_spheres(
     Exclusion spheres have a different role to other pharmacophore
     points during alignment, indicating regions in the pharmacophore
     model where no pharmacophore points are allowed during alignment.
-    The use of exclusion spheres in a pharmacophore model nicely 
+    The use of exclusion spheres in a pharmacophore model nicely
     mimics the spatial constraints of an active site. Exclusion spheres
     have a default alpha of 0.7.
 
@@ -61,14 +65,14 @@ def create_exclusion_spheres(
     rconf = receptor.GetConformer(receptor_confid)
     rpos = rconf.GetPositions()
 
-    # filter receptor positions using distance cutoff 
+    # filter receptor positions using distance cutoff
     if ligand is not None:
         lconf = ligand.GetConformer(ligand_confid)
         lpos = lconf.GetPositions()
         dists = _distsq_nxm(lpos, rpos)
         uix = np.unique(np.where(dists < cutoff)[1])
         rpos = rpos[uix]
-    
+
     # add pharmacophore at each receptor position
     for pos in rpos:
         p = PharmacophorePoint()
