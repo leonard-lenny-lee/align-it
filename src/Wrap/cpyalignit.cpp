@@ -43,10 +43,9 @@ std::string getVersion() {
     return version;
 }
 
-python::tuple alignPharmacophore(Pharmacophore &ref, Pharmacophore &probe,
-                                 ROMol *probeMol = nullptr,
-                                 double epsilon = 0.5, bool useNormals = true,
-                                 bool useExclusion = false) {
+Result alignPharmacophore(Pharmacophore &ref, Pharmacophore &probe,
+                          ROMol *probeMol = nullptr, double epsilon = 0.5,
+                          bool useNormals = true, bool useExclusion = false) {
     // Perform alignment
     auto res = alignit::alignPharmacophores(ref, probe, epsilon, useNormals,
                                             useExclusion, probeMol);
@@ -56,16 +55,15 @@ python::tuple alignPharmacophore(Pharmacophore &ref, Pharmacophore &probe,
         probeMol->clearConformers();
         probeMol->addConformer(new Conformer(conf));
     }
-    // Return is (tanimoto, tversky_ref, tversky_db)
-    return python::make_tuple(res.tanimoto, res.tversky_ref, res.tversky_db);
+    return res;
 }
 
-python::tuple alignMol(ROMol &refMol, ROMol &probeMol, bool calcArom = true,
-                       bool calcHDon = true, bool calcHAcc = true,
-                       bool calcLipo = true, bool calcCharge = true,
-                       bool calcHybrid = true, bool merge = false,
-                       double epsilon = 0.5, bool useNormals = true,
-                       bool useExclusion = false) {
+Result alignMol(ROMol &refMol, ROMol &probeMol, bool calcArom = true,
+                bool calcHDon = true, bool calcHAcc = true,
+                bool calcLipo = true, bool calcCharge = true,
+                bool calcHybrid = true, bool merge = false,
+                double epsilon = 0.5, bool useNormals = true,
+                bool useExclusion = false) {
     // Perform alignment
     auto out = alignit::alignMols(refMol, probeMol, calcArom, calcHDon,
                                   calcHAcc, calcLipo, calcCharge, calcHybrid,
@@ -75,8 +73,7 @@ python::tuple alignMol(ROMol &refMol, ROMol &probeMol, bool calcArom = true,
     const Conformer &conf = res.resMol.getConformer();
     probeMol.clearConformers();
     probeMol.addConformer(new Conformer(conf));
-    // Return is (tanimoto, tversky_ref, tversky_db)
-    return python::make_tuple(res.tanimoto, res.tversky_ref, res.tversky_db);
+    return res;
 }
 
 } // namespace
@@ -116,6 +113,21 @@ void wrap_pyalignit() {
     // Pharmacophore (pharmacophore model i.e. a vector of pharmacophore points)
     python::class_<Pharmacophore>("Pharmacophore")
         .def(python::vector_indexing_suite<std::vector<PharmacophorePoint>>());
+
+    python::class_<Result>("Result")
+        .add_property("refID", &Result::refId)
+        .add_property("refVolume", &Result::refVolume)
+        .add_property("dbId", &Result::dbId)
+        .add_property("dbVolume", &Result::dbVolume)
+        .add_property("overlapVolume", &Result::overlapVolume)
+        .add_property("exclVolume", &Result::exclVolume)
+        .add_property("resPharSize", &Result::resPharSize)
+        .add_property("tanimoto", &Result::tanimoto)
+        .add_property("tversky_ref", &Result::tversky_ref)
+        .add_property("tversky_db", &Result::tversky_db)
+        .add_property("rankbyScore", &Result::rankbyScore)
+        .add_property("resMol", &Result::resMol)
+        .add_property("resPhar", &Result::resPhar);
 
     // CalcPharm (calculate pharmacophores)
     python::def("CalcPharmacophore", &alignit::calcPharmacophore,

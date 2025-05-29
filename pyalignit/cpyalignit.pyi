@@ -28,6 +28,21 @@ class PharmacophorePoint:
     alpha: float
     hasNormal: bool
 
+class Result:
+    refId: str
+    refVolume: float
+    dbId: str
+    dbVolume: float
+    overlapVolume: float
+    exclVolume: float
+    resPharSize: int
+    tanimoto: float
+    tversky_ref: float
+    tversky_db: float
+    rankbyScore: float
+    resMol: Any
+    resPhar: Pharmacophore
+
 type Pharmacophore = list[PharmacophorePoint]
 
 def CalcPharmacophore(
@@ -47,7 +62,7 @@ def AlignPharmacophore(
     epsilon: float = 0.5,
     useNormals: bool = True,
     useExclusion: bool = False,
-) -> tuple[float, float, float]: ...
+) -> Result: ...
 def AlignMol(
     ref: Any,
     probe: Any,
@@ -61,4 +76,4 @@ def AlignMol(
     epsilon: float = 0.5,
     useNormals: bool = True,
     useExclusion: bool = False,
-) -> tuple[float, float, float]: ...
+) -> Result: ...

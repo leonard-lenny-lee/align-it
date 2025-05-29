@@ -1,6 +1,5 @@
 #include <attaFuncCalc.h>
 
-
 void attaFuncCalc(RDKit::ROMol *m, Pharmacophore *pharmacophore) {
     // Create a point for every atom with a R group connection
     const auto &conf = m->getConformer();
@@ -23,9 +22,19 @@ void attaFuncCalc(RDKit::ROMol *m, Pharmacophore *pharmacophore) {
     }
 }
 
+unsigned int countAttaFunc(const Pharmacophore &p) {
+    int count(0);
+    for (const auto &point : p) {
+        if (point.func == FuncGroup::ATTA) {
+            count++;
+        }
+    }
+    return count;
+}
 
 bool _hasRGroup(RDKit::Atom *a, RDKit::ROMol *m) {
-    for (const auto &nbri : boost::make_iterator_range(m->getAtomNeighbors(a))) {
+    for (const auto &nbri :
+         boost::make_iterator_range(m->getAtomNeighbors(a))) {
         const auto &aa = (*m)[nbri];
         if (aa->getAtomicNum() == 0) {
             return true;

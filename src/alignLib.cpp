@@ -26,6 +26,7 @@ Align-it can be linked against OpenBabel version 3 or the RDKit.
 
 ***********************************************************************/
 
+#include <algorithm>
 #include <alignLib.h>
 
 namespace alignit {
@@ -61,31 +62,48 @@ Result alignPharmacophores(Pharmacophore &ref, Pharmacophore &db,
                            Molecule *dbMol) {
     // Prepare reference
     unsigned int exclSize = 0;
-    const unsigned int refSize = ref.size();
     double refVolume = 0.0;
 
-    for (unsigned int i(0); i < refSize; ++i) {
-        if (ref[i].func == EXCL) {
-            for (unsigned int j(0); j < ref.size(); ++j) {
-                if (ref[j].func != EXCL) {
-                    refVolume -= VolumeOverlap(ref[i], ref[j], useNormals);
+    unsigned int refAttaSize = countAttaFunc(ref);
+    unsigned int dbAttaSize = countAttaFunc(db);
+    unsigned int nAttaPoints = std::min(refAttaSize, dbAttaSize);
+    const unsigned int refSize = ref.size() - refAttaSize + nAttaPoints;
+
+    unsigned int attaSize = 0;
+    for (auto &p1 : ref) {
+        if (p1.func == EXCL) {
+            for (auto &p2 : ref) {
+                if (p2.func != EXCL) {
+                    refVolume -= VolumeOverlap(p1, p2, useNormals);
                 }
             }
             exclSize++;
+        } else if (p1.func == FuncGroup::ATTA) {
+            if (attaSize < nAttaPoints) {
+                refVolume += VolumeOverlap(p1, p1, useNormals);
+                attaSize++;
+            }
         } else {
-            refVolume += VolumeOverlap(ref[i], ref[i], useNormals);
+            refVolume += VolumeOverlap(p1, p1, useNormals);
         }
     }
 
     // Prepare db
-    const unsigned int dbSize = db.size();
+    const unsigned int dbSize = db.size() - dbAttaSize + nAttaPoints;
     double dbVolume = 0.0;
 
-    for (unsigned int i(0); i < dbSize; ++i) {
-        if (db[i].func == EXCL) {
+    attaSize = 0;
+    for (auto &p : db) {
+        if (p.func == EXCL) {
             continue;
+        } else if (p.func == FuncGroup::ATTA) {
+            if (attaSize < nAttaPoints) {
+                dbVolume += VolumeOverlap(p, p, useNormals);
+                attaSize++;
+            }
+        } else {
+            dbVolume += VolumeOverlap(p, p, useNormals);
         }
-        dbVolume += VolumeOverlap(db[i], db[i], useNormals);
     }
 
     // Initialize result
@@ -125,17 +143,29 @@ Result alignPharmacophores(Pharmacophore &ref, Pharmacophore &db,
         int msize = fMap.size();
         // Add exclusion spheres if requested
         if (useExclusion) {
-            for (unsigned int i(0); i < refSize; ++i) {
-                if (ref[i].func != EXCL) {
+            for (auto &p1 : ref) {
+                if (p1.func != EXCL) {
                     continue;
                 }
-                for (unsigned int j(0); j < dbSize; ++j) {
-                    if (db[j].func == EXCL) {
+                for (auto &p2 : db) {
+                    if (p2.func == EXCL) {
                         continue;
                     }
-                    fMap.insert(std::make_pair(&(ref[i]), &(db[j])));
+                    fMap.insert(std::make_pair(&p1, &p2));
                 }
             }
+        }
+        // Only attempt alignment if all the ref attachment points are paired
+        unsigned int fMapAttaCount = 0;
+        for (auto itP = fMap.begin(); itP != fMap.end(); itP++) {
+            if (itP->first->func == FuncGroup::ATTA ||
+                itP->second->func == FuncGroup::ATTA) {
+                fMapAttaCount++;
+            }
+        }
+        if (fMapAttaCount != refAttaSize) {
+            fMap = funcMap.getNextMap();
+            continue;
         }
         // Only align if the expected score has any chance of being larger
         // than best score so far
@@ -164,11 +194,11 @@ Result alignPharmacophores(Pharmacophore &ref, Pharmacophore &db,
     res.info = best;
 
     // Compute overlap volume between exclusion spheres and pharmacophore points
-    for (int i(0); i < refSize; ++i) {
-        if (ref[i].func != EXCL)
+    for (auto &p1 : ref) {
+        if (p1.func != EXCL)
             continue;
-        for (int j(0); j < dbSize; ++j) {
-            res.exclVolume += VolumeOverlap(ref[i], db[j], useNormals);
+        for (auto &p2 : db) {
+            res.exclVolume += VolumeOverlap(p1, p2, useNormals);
         }
     }
     for (PharmacophoreMap::iterator itP = bestMap.begin(); itP != bestMap.end();
