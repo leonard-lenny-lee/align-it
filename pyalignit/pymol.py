@@ -13,41 +13,21 @@ SPHERE_ALPHA = 0.5
 SPHERE_RADIUS = 1
 ARROW_RADIUS = 0.1
 
-type Model = tuple[Pharmacophore, Chem.Mol | None]
+type Model = tuple[str, Pharmacophore | None, Chem.Mol | None]
 type _Coord = tuple[float, float, float]
 
 
-def view_pharmacophore(
-    name: str,
-    pharm: Pharmacophore,
-    mol: Chem.Mol | None = None,
+def view_pharmacophores(
+    session_name: str,
+    models: list[Model],
     launch_pymol: bool = False,
 ) -> None:
-    path = pathlib.Path(name)
-    pdb_path = str(path.with_suffix(".pdb"))
+    path = pathlib.Path(session_name)
     pse_path = str(path.with_suffix(".pse"))
 
-    if mol is not None:
-        Chem.MolToPDBFile(mol, pdb_path)
-
     with pymol2.PyMOL() as pymol:
-        pymol.cmd.load(pdb_path)
-
-        for i, p in enumerate(pharm):
-            cgo_list = []
-            pos = p.point.x, p.point.y, p.point.z
-            color = PHARM_COLORS[p.func]
-            label = f"{i+1}-{p.func}"
-            sphere = _sphere(pos, SPHERE_RADIUS, color)
-            cgo_list += sphere
-
-            if p.hasNormal:
-                normal_pos = p.normal.x, p.normal.y, p.normal.z
-                reverse = p.func == FuncGroup.HACC
-                arrow = _arrow(pos, normal_pos, ARROW_RADIUS, color, reverse)
-                cgo_list += arrow
-
-            pymol.cmd.load_cgo(cgo_list, f"{label}")
+        for model in models:
+            _view_pharmacophore(session_name, model, pymol)
 
         pymol.cmd.set("transparency_mode", 1)
         pymol.cmd.save(pse_path)
@@ -56,9 +36,43 @@ def view_pharmacophore(
         subprocess.run(["pymol", pse_path])
 
 
+def _view_pharmacophore(session_name: str, model: Model, instance: pymol2.PyMOL) -> None:
+    model_name, pharm, mol = model
+    group_name = model_name
+    instance.cmd.group(group_name)
+
+    if mol is not None:
+        pdb_name = f"{session_name}_{model_name}"
+        pdb_path = pathlib.Path(pdb_name).with_suffix(".pdb")
+        Chem.MolToPDBFile(mol, pdb_path)
+        instance.cmd.load(pdb_path, pdb_name)
+        instance.cmd.group(group_name, pdb_name, "add")
+
+    if pharm is None:
+        return
+
+    for i, p in enumerate(pharm):
+        cgo_list = []
+        pos = p.point.x, p.point.y, p.point.z
+        color = PHARM_COLORS[p.func]
+        func_label = f"{model_name}_{p.func}_{i}"
+        sphere = _sphere(pos, SPHERE_RADIUS, color)
+        cgo_list += sphere
+
+        if p.hasNormal:
+            normal_pos = p.normal.x, p.normal.y, p.normal.z
+            reverse = p.func == FuncGroup.HACC
+            arrow = _arrow(pos, normal_pos, ARROW_RADIUS, color, reverse)
+            cgo_list += arrow
+
+        instance.cmd.load_cgo(cgo_list, func_label)
+        instance.cmd.group(group_name, func_label, "add")
+
+
 def _sphere(pos: _Coord, radius: float, hex: str) -> list[float]:
     rgb = _hex_to_rgb(hex)
-    sphere = [cgo.ALPHA, SPHERE_ALPHA, cgo.COLOR, *rgb, cgo.SPHERE, *pos, radius]
+    sphere = [cgo.ALPHA, SPHERE_ALPHA, cgo.COLOR,
+              *rgb, cgo.SPHERE, *pos, radius]
     return sphere
 
 
@@ -79,4 +93,4 @@ def _arrow(
 
 def _hex_to_rgb(hex: str) -> tuple[float, ...]:
     hex = hex.lstrip("#")
-    return tuple(int(hex[i : i + 2], 16) / 255.0 for i in (0, 2, 4))
+    return tuple(int(hex[i: i + 2], 16) / 255.0 for i in (0, 2, 4))

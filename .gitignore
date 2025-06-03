@@ -1,3 +1,8 @@
+# macOS folder utility
+.DS_Store
+/scratch/
+*.ipynb
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
