@@ -205,6 +205,9 @@ void PharmacophoreWriter::write(Pharmacophore &p, std::ofstream *os,
         case EXCL:
             *os << "EXCL\t";
             break;
+        case ATTA:
+            *os << "ATTA\t";
+            break;
         case UNDEF:
             break;
         }

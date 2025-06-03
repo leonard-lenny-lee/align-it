@@ -26,9 +26,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <boost/python.hpp>
 #include <boost/python/suite/indexing/vector_indexing_suite.hpp>
 
-#include "alignLib.h"
-#include "config.h"
-#include "pharmacophore.h"
+#include <alignLib.h>
+#include <config.h>
+#include <pharmacophore.h>
 
 namespace python = boost::python;
 using namespace RDKit;

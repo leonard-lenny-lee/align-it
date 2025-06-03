@@ -34,8 +34,14 @@ Align-it can be linked against OpenBabel version 3 or the RDKit.
 
 // Align-it
 #include <alignment.h>
-#include <calcPharm.h>
+#include <aromFuncCalc.h>
+#include <attaFuncCalc.h>
+#include <chargeFuncCalc.h>
 #include <functionMapping.h>
+#include <hAccFuncCalc.h>
+#include <hDonFuncCalc.h>
+#include <hybridCalc.h>
+#include <lipoFuncCalc.h>
 #include <pharMerger.h>
 #include <pharmacophore.h>
 #include <result.h>

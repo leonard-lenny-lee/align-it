@@ -7,5 +7,6 @@ find_package(Boost COMPONENTS ${py3lib} REQUIRED)
 set(CMAKE_SHARED_MODULE_PREFIX "")
 
 python3_add_library(cpyalignit MODULE cpyalignit.cpp)
-target_link_libraries(cpyalignit PRIVATE alignit_lib ${RDKIT_DYN_LIBRARIES} Boost::${py3lib})
+target_include_directories(cpyalignit PRIVATE ${RDKIT_INCLUDE_DIR})
+target_link_libraries(cpyalignit PRIVATE ${PROJECT_NAME} ${RDKIT_DYN_LIBRARIES} Boost::${py3lib})
 set_target_properties(cpyalignit PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../../pyalignit)

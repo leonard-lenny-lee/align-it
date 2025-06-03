@@ -22,6 +22,7 @@ else()
                     $ENV{RDKIT_INCLUDE_PATH}
                     $ENV{RDKIT_BASE}\\Code
                     $ENV{RDBASE}\\Code
+                    $ENV{CONDA_PREFIX}\\include\\rdkit
                     C:\\RDKit\\include
                     C:\\RDKit\\Code
                     )
@@ -34,6 +35,7 @@ else()
                     $ENV{RDKIT_INCLUDE_PATH}
                     $ENV{RDKIT_BASE}/Code
                     $ENV{RDBASE}/Code
+                    $ENV{CONDA_PREFIX}/include/rdkit
                     /usr/local/rdkit/include/Code
                     /usr/local/rdkit/include
                     /usr/local/rdkit/Code

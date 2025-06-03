@@ -52,31 +52,22 @@ else(NOT BUILD_RDKIT_SUPPORT)  # RDKit
     message(STATUS "Building Align-it against RDKit")
     add_definitions(-DUSE_RDKIT)
     find_package(RDKit REQUIRED)
-    set(RDKIT_INCLUDE_DIR $ENV{CONDA_PREFIX}/include/rdkit)
-    file(GLOB RDKIT_LIBRARIES "${CONDA_LIB_DIR}/libRDKit*.dylib")
     find_package(Threads)
     set(RDKit_THREAD_LIBS Threads::Threads)
     find_package(Boost REQUIRED)
 endif(NOT BUILD_RDKIT_SUPPORT)
 
-add_library(alignit_lib SHARED src/siMath.cpp src/coordinate.cpp src/pharmacophore.cpp
+add_library(${PROJECT_NAME} SHARED src/siMath.cpp src/coordinate.cpp src/pharmacophore.cpp
     src/stringTokenizer.cpp src/chargeFuncCalc.cpp src/solutionInfo.cpp src/utilities.cpp
     src/pharMerger.cpp src/hybridCalc.cpp src/alignment.cpp src/functionMapping.cpp
-    src/result.cpp src/addBest.cpp src/compScore.cpp src/addBest.cpp
+    src/result.cpp src/compScore.cpp
     src/aromFuncCalc.cpp src/hAccFuncCalc.cpp src/hDonFuncCalc.cpp src/lipoFuncCalc.cpp
-    src/calcPharm.cpp src/alignLib.cpp src/mainWar.cpp src/attaFuncCalc.cpp
+    src/alignLib.cpp src/mainWar.cpp src/mainErr.cpp src/attaFuncCalc.cpp
 )
-target_include_directories(alignit_lib PUBLIC ${OPENBABEL3_INCLUDE_DIR} ${RDKIT_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
-target_link_libraries(alignit_lib ${OPENBABEL3_LIBRARIES} ${RDKIT_LIBRARIES} ${RDKit_THREAD_LIBS})
-install(TARGETS alignit_lib DESTINATION lib)
-
-add_executable(${PROJECT_NAME} src/options.cpp src/main.cpp src/mainErr.cpp src/printHeader.cpp
-    src/printInfo.cpp src/printUsage.cpp src/printProgress.cpp src/parseCommandLine.cpp
-    src/logOut.cpp src/logScores.cpp src/logPharmacophores.cpp src/getExt.cpp
-)
-target_link_libraries(${PROJECT_NAME} alignit_lib ${OPENBABEL3_LIBRARIES} ${RDKIT_LIBRARIES} ${RDKit_THREAD_LIBS})
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
-message("Installation directory of executable: ${CMAKE_INSTALL_PREFIX}/bin")
+target_include_directories(${PROJECT_NAME} PUBLIC ${OPENBABEL3_INCLUDE_DIR} ${RDKIT_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${OPENBABEL3_LIBRARIES} ${RDKIT_LIBRARIES} ${RDKit_THREAD_LIBS})
+install(TARGETS ${PROJECT_NAME} DESTINATION lib)
+message("Installation directory of lib${PROJECT_NAME}: ${CMAKE_INSTALL_PREFIX}/lib")
 
 if(BUILD_PYTHON_SUPPORT)
     if(NOT Python3_EXECUTABLE)  # Install Python into virtual environments, instead of globally
