@@ -10,14 +10,6 @@ IF(NOT CMAKE_BUILD_TYPE)
             FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
-option(BUILD_RDKIT_SUPPORT "Build against the RDKit instead of OpenBabel3" ON)
-option(BUILD_PYTHON_SUPPORT "Build Python wrappers (requires RDKit support)" ON)
-
-if(BUILD_PYTHON_SUPPORT AND (NOT BUILD_RDKIT_SUPPORT))
-    message(WARNING "Disabling BUILD_PYTHON_SUPPORT because BUILD_RDKIT_SUPPORT is not enabled")
-    set(BUILD_PYTHON_SUPPORT OFF)
-endif()
-
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules)
 set(ALIGNIT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -44,18 +36,10 @@ set(CMAKE_USE_PTHREADS_INIT 1)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 include_directories(${ALIGNIT_INCLUDE_DIR})
-if(NOT BUILD_RDKIT_SUPPORT)
-    message(STATUS "Building Align-it against OpenBabel3")
-    find_package(OpenBabel3 REQUIRED)
-    include_directories(${OPENBABEL3_INCLUDE_DIR})
-else(NOT BUILD_RDKIT_SUPPORT)  # RDKit
-    message(STATUS "Building Align-it against RDKit")
-    add_definitions(-DUSE_RDKIT)
-    find_package(RDKit REQUIRED)
-    find_package(Threads)
-    set(RDKit_THREAD_LIBS Threads::Threads)
-    find_package(Boost REQUIRED)
-endif(NOT BUILD_RDKIT_SUPPORT)
+find_package(RDKit REQUIRED)
+find_package(Threads)
+set(RDKit_THREAD_LIBS Threads::Threads)
+find_package(Boost REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED src/siMath.cpp src/coordinate.cpp src/pharmacophore.cpp
     src/stringTokenizer.cpp src/chargeFuncCalc.cpp src/solutionInfo.cpp src/utilities.cpp
@@ -64,32 +48,29 @@ add_library(${PROJECT_NAME} SHARED src/siMath.cpp src/coordinate.cpp src/pharmac
     src/aromFuncCalc.cpp src/hAccFuncCalc.cpp src/hDonFuncCalc.cpp src/lipoFuncCalc.cpp
     src/alignLib.cpp src/mainWar.cpp src/mainErr.cpp src/attaFuncCalc.cpp
 )
-target_include_directories(${PROJECT_NAME} PUBLIC ${OPENBABEL3_INCLUDE_DIR} ${RDKIT_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} ${OPENBABEL3_LIBRARIES} ${RDKIT_LIBRARIES} ${RDKit_THREAD_LIBS})
+target_include_directories(${PROJECT_NAME} PUBLIC ${RDKIT_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${RDKIT_LIBRARIES} ${RDKit_THREAD_LIBS})
 install(TARGETS ${PROJECT_NAME} DESTINATION lib)
 message("Installation directory of lib${PROJECT_NAME}: ${CMAKE_INSTALL_PREFIX}/lib")
 
-if(BUILD_PYTHON_SUPPORT)
-    if(NOT Python3_EXECUTABLE)  # Install Python into virtual environments, instead of globally
-        execute_process(
-            COMMAND which python
-            OUTPUT_VARIABLE Python3_EXECUTABLE
-            OUTPUT_STRIP_TRAILING_WHITESPACE
-        )
-    endif()
-    find_package(Python3 COMPONENTS Interpreter REQUIRED)
-    add_subdirectory(src/Wrap)
-    if(SKBUILD)
-        message(STATUS "Building pyalignit using skbuild")
-        install(TARGETS cpyalignit DESTINATION .)
-    else()
-        execute_process(
-            COMMAND "${Python3_EXECUTABLE}" -c "if True:
-              import sysconfig
-              print(sysconfig.get_path('platlib'))"
-            OUTPUT_VARIABLE PYTHON_SITE
-            OUTPUT_STRIP_TRAILING_WHITESPACE)
-        message(STATUS "Install location ${PYTHON_SITE}/pyalignit")
-        install(DIRECTORY pyalignit DESTINATION ${PYTHON_SITE})
-    endif(SKBUILD)
-endif(BUILD_PYTHON_SUPPORT)
+# Python installation
+execute_process(
+    COMMAND which python
+    OUTPUT_VARIABLE Python3_EXECUTABLE
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+find_package(Python3 COMPONENTS Interpreter REQUIRED)
+add_subdirectory(src/Wrap)
+if(SKBUILD)
+    message(STATUS "Building pyalignit using skbuild")
+    install(TARGETS cpyalignit DESTINATION .)
+else()
+    execute_process(
+        COMMAND "${Python3_EXECUTABLE}" -c "if True:
+          import sysconfig
+          print(sysconfig.get_path('platlib'))"
+        OUTPUT_VARIABLE PYTHON_SITE
+        OUTPUT_STRIP_TRAILING_WHITESPACE)
+    message(STATUS "Install location ${PYTHON_SITE}/pyalignit")
+    install(DIRECTORY pyalignit DESTINATION ${PYTHON_SITE})
+endif(SKBUILD)

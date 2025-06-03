@@ -18,12 +18,6 @@ This file is part of Align-it.
         You should have received a copy of the GNU Lesser General Public License
         along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
 
-Align-it can be linked against OpenBabel version 3 or the RDKit.
-
-        OpenBabel is free software; you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation version 2 of the License.
-
 ***********************************************************************/
 
 #include <pharmacophore.h>

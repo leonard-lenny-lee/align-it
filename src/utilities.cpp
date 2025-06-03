@@ -18,15 +18,13 @@ This file is part of Align-it.
         You should have received a copy of the GNU Lesser General Public License
         along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
 
-Align-it can be linked against OpenBabel version 3 or the RDKit.
-
-        OpenBabel is free software; you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation version 2 of the License.
-
 ***********************************************************************/
 
 #include <utilities.h>
+
+#include <Geometry/point.h>
+#include <GraphMol/Conformer.h>
+#include <GraphMol/RDKitBase.h>
 
 Coordinate translate(Coordinate &p, Coordinate &t) {
     Coordinate n;
@@ -312,59 +310,6 @@ void TransformPharmacophore(Pharmacophore &pharm, SiMath::Matrix &U,
     return;
 }
 
-#ifndef USE_RDKIT
-#include <openbabel/atom.h>
-#include <openbabel/mol.h>
-
-void positionMolecule(OpenBabel::OBMol *m, SiMath::Matrix &U, SolutionInfo &s) {
-    // transpose of rotation matrix
-    SiMath::Matrix rt = s.rotation2.transpose();
-    Coordinate point;
-    std::vector<OpenBabel::OBAtom *>::iterator ai;
-    for (OpenBabel::OBAtom *a = m->BeginAtom(ai); a; a = m->NextAtom(ai)) {
-        point.x = a->x();
-        point.y = a->y();
-        point.z = a->z();
-        point.x -= s.center2.x;
-        point.y -= s.center2.y;
-        point.z -= s.center2.z;
-        point = rotate(point, rt);
-        point = rotate(point, U);
-        point = rotate(point, s.rotation1);
-        point.x += s.center1.x;
-        point.y += s.center1.y;
-        point.z += s.center1.z;
-        a->SetVector(point.x, point.y, point.z);
-    }
-    return;
-}
-
-void TransformMolecule(OpenBabel::OBMol *m, SiMath::Matrix &U,
-                       Coordinate &center1, Coordinate &center2) {
-    Coordinate point;
-    std::vector<OpenBabel::OBAtom *>::iterator ai;
-    for (OpenBabel::OBAtom *a = m->BeginAtom(ai); a; a = m->NextAtom(ai)) {
-        point.x = a->x();
-        point.y = a->y();
-        point.z = a->z();
-
-        point.x -= center2.x;
-        point.y -= center2.y;
-        point.z -= center2.z;
-        point = rotate(point, U);
-        point.x += center1.x;
-        point.y += center1.y;
-        point.z += center1.z;
-        a->SetVector(point.x, point.y, point.z);
-    }
-    return;
-}
-
-#else
-#include <Geometry/point.h>
-#include <GraphMol/Conformer.h>
-#include <GraphMol/RDKitBase.h>
-
 void positionMolecule(RDKit::ROMol *m, SiMath::Matrix &U, SolutionInfo &s) {
     RDKit::Conformer &conf = m->getConformer();
     SiMath::Matrix rt = s.rotation2.transpose();
@@ -406,5 +351,3 @@ void TransformMolecule(RDKit::ROMol *m, SiMath::Matrix &U, Coordinate &center1,
         conf.setAtomPos(i, RDGeom::Point3D(point.x, point.y, point.z));
     }
 }
-
-#endif

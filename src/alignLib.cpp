@@ -18,12 +18,6 @@ This file is part of Align-it.
         You should have received a copy of the GNU Lesser General Public License
         along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
 
-Align-it can be linked against OpenBabel version 3 or the RDKit.
-
-        OpenBabel is free software; you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation version 2 of the License.
-
 ***********************************************************************/
 
 #include <algorithm>
@@ -113,17 +107,11 @@ Result alignPharmacophores(Pharmacophore &ref, Pharmacophore &db,
     res.overlapVolume = 0.0;
     res.exclVolume = 0.0;
     res.resPharSize = 0;
-#ifndef USE_RDKIT
-    if (dbMol) {
-        res.resMol = *dbMol;
-    }
-#else
     if (dbMol) {
         res.resMol = *dbMol;
     } else {
         res.resMol.addConformer(new RDKit::Conformer(0));
     }
-#endif
 
     // Alignment
     FunctionMapping funcMap(&ref, &db, epsilon);

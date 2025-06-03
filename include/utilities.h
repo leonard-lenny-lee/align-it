@@ -18,26 +18,15 @@ This file is part of Align-it.
         You should have received a copy of the GNU Lesser General Public License
         along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
 
-Align-it can be linked against OpenBabel version 3 or the RDKit.
-
-        OpenBabel is free software; you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation version 2 of the License.
-
 ***********************************************************************/
 
 #ifndef __SILICOSIT_ALIGNIT_UTILITIES_H__
 #define __SILICOSIT_ALIGNIT_UTILITIES_H__
 
 // Toolkit
-#ifndef USE_RDKIT
-#include <openbabel/mol.h>
-using Molecule = OpenBabel::OBMol;
-#else
 #include <GraphMol/Atom.h>
 #include <GraphMol/ROMol.h>
 using Molecule = RDKit::ROMol;
-#endif
 
 // Align-it
 #include <coordinate.h>
@@ -73,8 +62,6 @@ void TransformMolecule(Molecule *m, SiMath::Matrix &U, Coordinate &center1,
                        Coordinate &center2);
 void positionMolecule(Molecule *m, SiMath::Matrix &U, SolutionInfo &s);
 
-#ifdef USE_RDKIT
 unsigned int getHeavyDegree(RDKit::Atom *);
-#endif
 
 #endif //__SILICOSIT_ALIGNIT_UTILITIES_H__

@@ -18,12 +18,6 @@ This file is part of Align-it.
         You should have received a copy of the GNU Lesser General Public License
         along with Align-it.  If not, see <http://www.gnu.org/licenses/>.
 
-Align-it can be linked against OpenBabel version 3 or the RDKit.
-
-        OpenBabel is free software; you can redistribute it and/or modify
-        it under the terms of the GNU General Public License as published by
-        the Free Software Foundation version 2 of the License.
-
 ***********************************************************************/
 
 #ifndef __SILICOSIT_ALIGNIT_RESULT_H__
@@ -34,12 +28,8 @@ Align-it can be linked against OpenBabel version 3 or the RDKit.
 #include <vector>
 
 // Toolkit
-#ifndef USE_RDKIT
-#include <openbabel/mol.h>
-#else
 #include <GraphMol/Atom.h>
 #include <GraphMol/RWMol.h>
-#endif
 
 // Align-it
 #include <pharmacophore.h>
@@ -64,11 +54,7 @@ class Result {
     double rankbyScore; // one of the three scores...
 
     SolutionInfo info; // information about the alignment
-#ifndef USE_RDKIT
-    OpenBabel::OBMol resMol; // resulting molecule
-#else
     RDKit::RWMol resMol; // resulting molecule
-#endif
     Pharmacophore resPhar; // overlapping pharmacophore
 
     Result(void);
