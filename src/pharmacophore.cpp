@@ -33,6 +33,7 @@ PharmacophorePoint::PharmacophorePoint() {
     point.y = 0.0;
     point.z = 0.0;
     hasNormal = false;
+    rGroupAtom = std::nullopt;
 }
 
 PharmacophorePoint::PharmacophorePoint(const PharmacophorePoint &p) {
@@ -41,6 +42,7 @@ PharmacophorePoint::PharmacophorePoint(const PharmacophorePoint &p) {
     alpha = p.alpha;
     normal = p.normal;
     hasNormal = p.hasNormal;
+    rGroupAtom = p.rGroupAtom;
 }
 
 PharmacophorePoint::PharmacophorePoint(const PharmacophorePoint *p) {
@@ -49,6 +51,7 @@ PharmacophorePoint::PharmacophorePoint(const PharmacophorePoint *p) {
     alpha = p->alpha;
     normal = p->normal;
     hasNormal = p->hasNormal;
+    rGroupAtom = p->rGroupAtom;
 }
 
 PharmacophoreReader::PharmacophoreReader(void) {}
@@ -124,6 +127,10 @@ Pharmacophore PharmacophoreReader::read(std::ifstream *_input,
         if (lineVec[0] == "EXCL") {
             isOk = true;
             p.func = EXCL;
+        }
+        if (lineVec[0] == "ATTA") {
+            isOk = true;
+            p.func = ATTA;
         }
         if (!isOk) {
             _skipPharmacophore(_input);

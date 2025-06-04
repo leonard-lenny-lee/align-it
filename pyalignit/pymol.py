@@ -36,7 +36,9 @@ def view_pharmacophores(
         subprocess.run(["pymol", pse_path])
 
 
-def _view_pharmacophore(session_name: str, model: Model, instance: pymol2.PyMOL) -> None:
+def _view_pharmacophore(
+    session_name: str, model: Model, instance: pymol2.PyMOL
+) -> None:
     model_name, pharm, mol = model
     group_name = model_name
     instance.cmd.group(group_name)
@@ -71,8 +73,7 @@ def _view_pharmacophore(session_name: str, model: Model, instance: pymol2.PyMOL)
 
 def _sphere(pos: _Coord, radius: float, hex: str) -> list[float]:
     rgb = _hex_to_rgb(hex)
-    sphere = [cgo.ALPHA, SPHERE_ALPHA, cgo.COLOR,
-              *rgb, cgo.SPHERE, *pos, radius]
+    sphere = [cgo.ALPHA, SPHERE_ALPHA, cgo.COLOR, *rgb, cgo.SPHERE, *pos, radius]
     return sphere
 
 
@@ -93,4 +94,4 @@ def _arrow(
 
 def _hex_to_rgb(hex: str) -> tuple[float, ...]:
     hex = hex.lstrip("#")
-    return tuple(int(hex[i: i + 2], 16) / 255.0 for i in (0, 2, 4))
+    return tuple(int(hex[i : i + 2], 16) / 255.0 for i in (0, 2, 4))

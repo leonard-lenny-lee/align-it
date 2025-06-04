@@ -22,6 +22,7 @@ This file is part of Align-it.
 
 #include <algorithm>
 #include <alignLib.h>
+#include <optional>
 
 namespace alignit {
 
@@ -168,8 +169,10 @@ Result alignPharmacophores(Pharmacophore &ref, Pharmacophore &db,
                 bestMap = fMap;
                 mapSize = msize;
             }
-        } else
-            break; // Level of mapping site to low
+        } else {
+            fMap = funcMap.getNextMap();
+            continue; // Level of mapping site to low
+        }
         if (bestScore > 0.98)
             break;
         fMap.clear();
@@ -191,8 +194,15 @@ Result alignPharmacophores(Pharmacophore &ref, Pharmacophore &db,
     }
     for (PharmacophoreMap::iterator itP = bestMap.begin(); itP != bestMap.end();
          ++itP) {
-        if (((itP->first)->func == EXCL) || ((itP->second)->func == EXCL))
+        if (((itP->first)->func == EXCL) || ((itP->second)->func == EXCL)) {
             continue;
+        }
+        // Map R-group atoms to each other to facilitate R-group recomposition
+        if (((itP->first)->func == FuncGroup::ATTA) &&
+            ((itP->second)->func == FuncGroup::ATTA)) {
+            itP->second->rGroupAtom.value()->setAtomMapNum(
+                itP->first->rGroupAtom.value()->getAtomMapNum());
+        }
         res.overlapVolume += VolumeOverlap(itP->first, itP->second, useNormals);
         PharmacophorePoint p(itP->second);
         (res.resPhar).push_back(p);

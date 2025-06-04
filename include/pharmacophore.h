@@ -28,6 +28,7 @@ This file is part of Align-it.
 #include <iostream>
 #include <list>
 #include <map>
+#include <optional>
 #include <stdlib.h>
 #include <string>
 #include <vector>
@@ -36,6 +37,8 @@ This file is part of Align-it.
 #include <coordinate.h>
 #include <mainWar.h>
 #include <siMath.h>
+
+#include <GraphMol/Atom.h>
 
 enum FuncGroup {
     AROM,  ///< Aromatic ring-system, calculated by the AromFuncCalc class
@@ -52,9 +55,9 @@ enum FuncGroup {
 };
 
 const std::string funcName[11] = {
-    "SILICOS::PHARAO::AROM", "SILICOS::PHARAO::HDON", "SILICOS::PHARAO::HACC",
-    "SILICOS::PHARAO::LIPO", "SILICOS::PHARAO::POSC", "SILICOS::PHARAO::NEGC",
-    "SILICOS::PHARAO::HYBH", "SILICOS::PHARAO::HYBL", "SILICOS::PHARAO::EXCL",
+    "SILICOS::PHARAO::AROM",  "SILICOS::PHARAO::HDON", "SILICOS::PHARAO::HACC",
+    "SILICOS::PHARAO::LIPO",  "SILICOS::PHARAO::POSC", "SILICOS::PHARAO::NEGC",
+    "SILICOS::PHARAO::HYBH",  "SILICOS::PHARAO::HYBL", "SILICOS::PHARAO::EXCL",
     "SILICOS::PHARAO::UNDEF", "SILICOS::PHARAO::ATTA"};
 
 const bool funcHasNormal[11] = {
@@ -92,6 +95,7 @@ class PharmacophorePoint {
     FuncGroup func;
     double alpha;
     bool hasNormal;
+    std::optional<RDKit::Atom *> rGroupAtom;
 
     PharmacophorePoint(void);
     PharmacophorePoint(const PharmacophorePoint &);

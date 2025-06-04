@@ -3,10 +3,19 @@
 void attaFuncCalc(RDKit::ROMol *m, Pharmacophore *pharmacophore) {
     // Create a point for every atom with a R group connection
     const auto &conf = m->getConformer();
-    for (auto a : m->atoms()) {
+    for (RDKit::Atom *a : m->atoms()) {
         if (a->getAtomicNum() <= 1)
             continue;
-        if (!_hasRGroup(a, m)) {
+        std::optional<RDKit::Atom *> rGroupAtom = std::nullopt;
+        for (const auto &nbri :
+             boost::make_iterator_range(m->getAtomNeighbors(a))) {
+            RDKit::Atom *aa = (*m)[nbri];
+            if (aa->getAtomicNum() == 0) {
+                rGroupAtom = aa;
+                break;
+            }
+        }
+        if (!rGroupAtom.has_value()) {
             continue;
         }
         PharmacophorePoint p;
@@ -18,6 +27,7 @@ void attaFuncCalc(RDKit::ROMol *m, Pharmacophore *pharmacophore) {
         p.alpha = funcSigma[FuncGroup::ATTA];
         p.hasNormal = true;
         p.normal = _attaCalcNormal(a, conf);
+        p.rGroupAtom = rGroupAtom;
         pharmacophore->push_back(p);
     }
 }
@@ -30,17 +40,6 @@ unsigned int countAttaFunc(const Pharmacophore &p) {
         }
     }
     return count;
-}
-
-bool _hasRGroup(RDKit::Atom *a, RDKit::ROMol *m) {
-    for (const auto &nbri :
-         boost::make_iterator_range(m->getAtomNeighbors(a))) {
-        const auto &aa = (*m)[nbri];
-        if (aa->getAtomicNum() == 0) {
-            return true;
-        }
-    }
-    return false;
 }
 
 Coordinate _attaCalcNormal(RDKit::Atom *a, const RDKit::Conformer &conf) {
