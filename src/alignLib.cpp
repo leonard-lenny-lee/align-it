@@ -28,7 +28,7 @@ namespace alignit {
 
 Pharmacophore calcPharmacophore(Molecule &mol, bool calcArom, bool calcHDon,
                                 bool calcHAcc, bool calcLipo, bool calcCharge,
-                                bool calcHybrid) {
+                                bool calcHybrid, bool calcExits) {
     Pharmacophore pharm;
     if (calcArom)
         aromFuncCalc(&mol, &pharm);
@@ -40,10 +40,10 @@ Pharmacophore calcPharmacophore(Molecule &mol, bool calcArom, bool calcHDon,
         lipoFuncCalc(&mol, &pharm);
     if (calcCharge)
         chargeFuncCalc(&mol, &pharm);
+    if (calcExits)
+        exitFuncCalc(&mol, &pharm);
     if (calcHybrid)
         hybridCalc(&mol, &pharm);
-    if (true)
-        attaFuncCalc(&mol, &pharm);
     return pharm;
 }
 
@@ -59,12 +59,12 @@ Result alignPharmacophores(Pharmacophore &ref, Pharmacophore &db,
     unsigned int exclSize = 0;
     double refVolume = 0.0;
 
-    unsigned int refAttaSize = countAttaFunc(ref);
-    unsigned int dbAttaSize = countAttaFunc(db);
-    unsigned int nAttaPoints = std::min(refAttaSize, dbAttaSize);
-    const unsigned int refSize = ref.size() - refAttaSize + nAttaPoints;
+    unsigned int refExitNum = countExit(ref);
+    unsigned int dbExitNum = countExit(db);
+    unsigned int numExits = std::min(refExitNum, dbExitNum);
+    const unsigned int refSize = ref.size() - refExitNum + numExits;
 
-    unsigned int attaSize = 0;
+    unsigned int numExitsAdded = 0;
     for (auto &p1 : ref) {
         if (p1.func == EXCL) {
             for (auto &p2 : ref) {
@@ -73,10 +73,10 @@ Result alignPharmacophores(Pharmacophore &ref, Pharmacophore &db,
                 }
             }
             exclSize++;
-        } else if (p1.func == FuncGroup::ATTA) {
-            if (attaSize < nAttaPoints) {
+        } else if (p1.func == FuncGroup::EXIT) {
+            if (numExitsAdded < numExits) {
                 refVolume += VolumeOverlap(p1, p1, useNormals);
-                attaSize++;
+                numExitsAdded++;
             }
         } else {
             refVolume += VolumeOverlap(p1, p1, useNormals);
@@ -84,17 +84,17 @@ Result alignPharmacophores(Pharmacophore &ref, Pharmacophore &db,
     }
 
     // Prepare db
-    const unsigned int dbSize = db.size() - dbAttaSize + nAttaPoints;
+    const unsigned int dbSize = db.size() - dbExitNum + numExits;
     double dbVolume = 0.0;
 
-    attaSize = 0;
+    numExitsAdded = 0;
     for (auto &p : db) {
         if (p.func == EXCL) {
             continue;
-        } else if (p.func == FuncGroup::ATTA) {
-            if (attaSize < nAttaPoints) {
+        } else if (p.func == FuncGroup::EXIT) {
+            if (numExitsAdded < numExits) {
                 dbVolume += VolumeOverlap(p, p, useNormals);
-                attaSize++;
+                numExitsAdded++;
             }
         } else {
             dbVolume += VolumeOverlap(p, p, useNormals);
@@ -144,15 +144,15 @@ Result alignPharmacophores(Pharmacophore &ref, Pharmacophore &db,
                 }
             }
         }
-        // Only attempt alignment if all the ref attachment points are paired
-        unsigned int fMapAttaCount = 0;
+        // Only attempt alignment if all the ref exit vectors are paired
+        unsigned int fMapExitCount = 0;
         for (auto itP = fMap.begin(); itP != fMap.end(); itP++) {
-            if (itP->first->func == FuncGroup::ATTA ||
-                itP->second->func == FuncGroup::ATTA) {
-                fMapAttaCount++;
+            if (itP->first->func == FuncGroup::EXIT ||
+                itP->second->func == FuncGroup::EXIT) {
+                fMapExitCount++;
             }
         }
-        if (fMapAttaCount != refAttaSize) {
+        if (fMapExitCount != refExitNum) {
             fMap = funcMap.getNextMap();
             continue;
         }
@@ -198,8 +198,8 @@ Result alignPharmacophores(Pharmacophore &ref, Pharmacophore &db,
             continue;
         }
         // Map R-group atoms to each other to facilitate R-group recomposition
-        if (((itP->first)->func == FuncGroup::ATTA) &&
-            ((itP->second)->func == FuncGroup::ATTA)) {
+        if (((itP->first)->func == FuncGroup::EXIT) &&
+            ((itP->second)->func == FuncGroup::EXIT)) {
             itP->second->rGroupAtom.value()->setAtomMapNum(
                 itP->first->rGroupAtom.value()->getAtomMapNum());
         }

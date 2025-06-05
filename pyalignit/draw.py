@@ -28,7 +28,7 @@ PHARM_COLORS = {
     FuncGroup.HYBL: "#cbd123",  # yellow
     FuncGroup.EXCL: "#808080",  # grey
     FuncGroup.UNDEF: "#0f0f0f",  # black
-    FuncGroup.ATTA: "#cbd123",  # yellow
+    FuncGroup.EXIT: "#ffffff",  # white
 }
 
 

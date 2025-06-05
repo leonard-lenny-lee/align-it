@@ -46,7 +46,7 @@ add_library(${PROJECT_NAME} SHARED src/siMath.cpp src/coordinate.cpp src/pharmac
     src/pharMerger.cpp src/hybridCalc.cpp src/alignment.cpp src/functionMapping.cpp
     src/result.cpp src/compScore.cpp
     src/aromFuncCalc.cpp src/hAccFuncCalc.cpp src/hDonFuncCalc.cpp src/lipoFuncCalc.cpp
-    src/alignLib.cpp src/mainWar.cpp src/mainErr.cpp src/attaFuncCalc.cpp
+    src/alignLib.cpp src/mainWar.cpp src/mainErr.cpp src/exitFuncCalc.cpp
 )
 target_include_directories(${PROJECT_NAME} PUBLIC ${RDKIT_INCLUDE_DIR} ${Boost_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${RDKIT_LIBRARIES} ${RDKit_THREAD_LIBS})

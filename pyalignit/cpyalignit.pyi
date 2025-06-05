@@ -19,7 +19,7 @@ class FuncGroup(StrEnum):
     HYBL = "HYBL"
     EXCL = "EXCL"
     UNDEF = "UNDEF"
-    ATTA = "ATTA"
+    EXIT = "EXIT"
 
 class PharmacophorePoint:
     point: Coordinate

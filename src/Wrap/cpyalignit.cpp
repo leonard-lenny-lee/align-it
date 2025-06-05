@@ -100,7 +100,7 @@ void wrap_pyalignit() {
         .value("HYBL", FuncGroup::HYBL)
         .value("EXCL", FuncGroup::EXCL)
         .value("UNDEF", FuncGroup::UNDEF)
-        .value("ATTA", FuncGroup::ATTA);
+        .value("EXIT", FuncGroup::EXIT);
 
     // PharmacophorePoint (represents a functional group)
     python::class_<PharmacophorePoint>("PharmacophorePoint")

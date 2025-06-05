@@ -29,7 +29,7 @@ This file is part of Align-it.
 // Align-it
 #include <alignment.h>
 #include <aromFuncCalc.h>
-#include <attaFuncCalc.h>
+#include <exitFuncCalc.h>
 #include <chargeFuncCalc.h>
 #include <functionMapping.h>
 #include <hAccFuncCalc.h>
@@ -51,7 +51,7 @@ namespace alignit {
 Pharmacophore calcPharmacophore(Molecule &mol, bool calcArom = true,
                                 bool calcHDon = true, bool calcHAcc = true,
                                 bool calcLipo = true, bool calcCharge = true,
-                                bool calcHybrid = true);
+                                bool calcHybrid = true, bool calcExits = true);
 
 void mergePharmacophore(Pharmacophore &p);
 

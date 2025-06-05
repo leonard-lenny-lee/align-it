@@ -128,9 +128,9 @@ Pharmacophore PharmacophoreReader::read(std::ifstream *_input,
             isOk = true;
             p.func = EXCL;
         }
-        if (lineVec[0] == "ATTA") {
+        if (lineVec[0] == "EXIT") {
             isOk = true;
-            p.func = ATTA;
+            p.func = EXIT;
         }
         if (!isOk) {
             _skipPharmacophore(_input);
@@ -206,8 +206,8 @@ void PharmacophoreWriter::write(Pharmacophore &p, std::ofstream *os,
         case EXCL:
             *os << "EXCL\t";
             break;
-        case ATTA:
-            *os << "ATTA\t";
+        case EXIT:
+            *os << "EXIT\t";
             break;
         case UNDEF:
             break;

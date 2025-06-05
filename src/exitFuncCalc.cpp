@@ -1,6 +1,6 @@
-#include <attaFuncCalc.h>
+#include <exitFuncCalc.h>
 
-void attaFuncCalc(RDKit::ROMol *m, Pharmacophore *pharmacophore) {
+void exitFuncCalc(RDKit::ROMol *m, Pharmacophore *pharmacophore) {
     // Create a point for every atom with a R group connection
     const auto &conf = m->getConformer();
     for (RDKit::Atom *a : m->atoms()) {
@@ -20,29 +20,29 @@ void attaFuncCalc(RDKit::ROMol *m, Pharmacophore *pharmacophore) {
         }
         PharmacophorePoint p;
         const auto &point = conf.getAtomPos(a->getIdx());
-        p.func = FuncGroup::ATTA;
+        p.func = FuncGroup::EXIT;
         p.point.x = point.x;
         p.point.y = point.y;
         p.point.z = point.z;
-        p.alpha = funcSigma[FuncGroup::ATTA];
+        p.alpha = funcSigma[FuncGroup::EXIT];
         p.hasNormal = true;
-        p.normal = _attaCalcNormal(a, conf);
+        p.normal = _exitCalcNormal(a, conf);
         p.rGroupAtom = rGroupAtom;
         pharmacophore->push_back(p);
     }
 }
 
-unsigned int countAttaFunc(const Pharmacophore &p) {
+unsigned int countExit(const Pharmacophore &p) {
     int count(0);
     for (const auto &point : p) {
-        if (point.func == FuncGroup::ATTA) {
+        if (point.func == FuncGroup::EXIT) {
             count++;
         }
     }
     return count;
 }
 
-Coordinate _attaCalcNormal(RDKit::Atom *a, const RDKit::Conformer &conf) {
+Coordinate _exitCalcNormal(RDKit::Atom *a, const RDKit::Conformer &conf) {
     Coordinate normal;
     const auto &p = conf.getAtomPos(a->getIdx());
     for (const auto &nbri :
