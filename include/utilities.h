@@ -23,6 +23,8 @@ This file is part of Align-it.
 #ifndef __SILICOSIT_ALIGNIT_UTILITIES_H__
 #define __SILICOSIT_ALIGNIT_UTILITIES_H__
 
+#include <vector>
+
 // Toolkit
 #include <GraphMol/Atom.h>
 #include <GraphMol/ROMol.h>
@@ -63,5 +65,9 @@ void TransformMolecule(Molecule *m, SiMath::Matrix &U, Coordinate &center1,
 void positionMolecule(Molecule *m, SiMath::Matrix &U, SolutionInfo &s);
 
 unsigned int getHeavyDegree(RDKit::Atom *);
+
+std::vector<unsigned int> getWildcardAtomIdxs(Molecule &mol);
+
+void changeAtomicNumByIdx(Molecule& mol, const std::vector<unsigned int>& atomIdxs, const int atomicNum);
 
 #endif //__SILICOSIT_ALIGNIT_UTILITIES_H__

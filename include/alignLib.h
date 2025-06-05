@@ -64,7 +64,7 @@ alignMols(Molecule &refMol, Molecule &refDb, bool calcArom = true,
           bool calcHDon = true, bool calcHAcc = true, bool calcLipo = true,
           bool calcCharge = true, bool calcHybrid = true, bool merge = false,
           double epsilon = 0.5, bool useNormals = true,
-          bool useExclusion = false);
+          bool useExclusion = false, bool calcExits = true);
 
 } // namespace alignit
 

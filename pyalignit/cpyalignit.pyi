@@ -53,6 +53,7 @@ def CalcPharmacophore(
     calcLipo: bool = True,
     calcCharge: bool = True,
     calcHybrid: bool = True,
+    calcExits: bool = True,
 ) -> Pharmacophore: ...
 def MergePharmacophore(pharmacophore: Pharmacophore) -> Pharmacophore: ...
 def AlignPharmacophore(
@@ -76,4 +77,5 @@ def AlignMol(
     epsilon: float = 0.5,
     useNormals: bool = True,
     useExclusion: bool = False,
+    calcExits: bool = True,
 ) -> Result: ...

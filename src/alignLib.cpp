@@ -24,12 +24,17 @@ This file is part of Align-it.
 #include <alignLib.h>
 #include <optional>
 
+#include <utilities.h>
+
 namespace alignit {
 
 Pharmacophore calcPharmacophore(Molecule &mol, bool calcArom, bool calcHDon,
                                 bool calcHAcc, bool calcLipo, bool calcCharge,
                                 bool calcHybrid, bool calcExits) {
     Pharmacophore pharm;
+    // Change wildcard atoms into Hs to not affect H-bond detection
+    const std::vector<unsigned int>& wildcardAtomIdxs = getWildcardAtomIdxs(mol);
+    changeAtomicNumByIdx(mol, wildcardAtomIdxs, 1);
     if (calcArom)
         aromFuncCalc(&mol, &pharm);
     if (calcHDon)
@@ -40,10 +45,12 @@ Pharmacophore calcPharmacophore(Molecule &mol, bool calcArom, bool calcHDon,
         lipoFuncCalc(&mol, &pharm);
     if (calcCharge)
         chargeFuncCalc(&mol, &pharm);
-    if (calcExits)
-        exitFuncCalc(&mol, &pharm);
     if (calcHybrid)
         hybridCalc(&mol, &pharm);
+    // Revert to wildcards for exit vector detection
+    changeAtomicNumByIdx(mol, wildcardAtomIdxs, 0);
+    if (calcExits)
+        exitFuncCalc(&mol, &pharm);
     return pharm;
 }
 
@@ -223,12 +230,12 @@ Result alignPharmacophores(Pharmacophore &ref, Pharmacophore &db,
 std::tuple<Pharmacophore, Result>
 alignMols(Molecule &refMol, Molecule &dbMol, bool calcArom, bool calcHDon,
           bool calcHAcc, bool calcLipo, bool calcCharge, bool calcHybrid,
-          bool merge, double epsilon, bool useNormals, bool useExclusion) {
+          bool merge, double epsilon, bool useNormals, bool useExclusion, bool calcExits) {
     // Prepare pharmacophores
     Pharmacophore ref = calcPharmacophore(refMol, calcArom, calcHDon, calcHAcc,
-                                          calcLipo, calcCharge, calcHybrid);
+                                          calcLipo, calcCharge, calcHybrid, calcExits);
     Pharmacophore db = calcPharmacophore(dbMol, calcArom, calcHDon, calcHAcc,
-                                         calcLipo, calcCharge, calcHybrid);
+                                         calcLipo, calcCharge, calcHybrid, calcExits);
     if (merge) {
         mergePharmacophore(ref);
         mergePharmacophore(db);

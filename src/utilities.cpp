@@ -351,3 +351,20 @@ void TransformMolecule(RDKit::ROMol *m, SiMath::Matrix &U, Coordinate &center1,
         conf.setAtomPos(i, RDGeom::Point3D(point.x, point.y, point.z));
     }
 }
+
+std::vector<unsigned int> getWildcardAtomIdxs(Molecule &mol) {
+    std::vector<unsigned int> idxs;
+    for (RDKit::Atom* a : mol.atoms()) {
+        if (a->getAtomicNum() == 0) {
+            idxs.push_back(a->getIdx());
+        }
+    }
+    return idxs;
+}
+
+void changeAtomicNumByIdx(Molecule& mol, const std::vector<unsigned int>& atomIdxs, const int atomicNum) {
+    for (unsigned int atomIdx : atomIdxs) {
+        RDKit::Atom* a = mol.getAtomWithIdx(atomIdx);
+        a->setAtomicNum(atomicNum);
+    }
+}

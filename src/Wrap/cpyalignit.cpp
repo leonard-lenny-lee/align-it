@@ -63,11 +63,11 @@ Result alignMol(ROMol &refMol, ROMol &probeMol, bool calcArom = true,
                 bool calcLipo = true, bool calcCharge = true,
                 bool calcHybrid = true, bool merge = false,
                 double epsilon = 0.5, bool useNormals = true,
-                bool useExclusion = false) {
+                bool useExclusion = false, bool calcExits = true) {
     // Perform alignment
     auto out = alignit::alignMols(refMol, probeMol, calcArom, calcHDon,
                                   calcHAcc, calcLipo, calcCharge, calcHybrid,
-                                  merge, epsilon, useNormals, useExclusion);
+                                  merge, epsilon, useNormals, useExclusion, calcExits);
     const Result &res = std::get<1>(out);
     // Update molecules conformer
     const Conformer &conf = res.resMol.getConformer();
@@ -135,7 +135,8 @@ void wrap_pyalignit() {
                  python::arg("calcHDon") = true, python::arg("calcHAcc") = true,
                  python::arg("calcLipo") = true,
                  python::arg("calcCharge") = true,
-                 python::arg("calcHybrid") = true),
+                 python::arg("calcHybrid") = true,
+                 python::arg("calcExits") = true),
                 "calculate a pharmacophore model for a molecule.");
 
     // PharmMerger (merge neighboring pharmacophores)
@@ -162,7 +163,8 @@ void wrap_pyalignit() {
          python::args("calcCharge") = true, python::args("calcHybrid") = true,
          python::args("merge") = false, python::args("epsilon") = 0.5,
          python::args("useNormals") = true,
-         python::args("useExclusion") = false),
+         python::args("useExclusion") = false,
+         python::args("calcExits") = true),
         "aligns probe to ref, probe is modified");
 }
 
