@@ -1,3 +1,6 @@
+__all__ = ["prepare_mol", "decompose_mol", "recompose_mol"]
+
+
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Chem import rdRGroupDecomposition as rdRGD
@@ -17,7 +20,6 @@ def prepare_mol(mol: Chem.Mol) -> Chem.Mol:
     Chem.SanitizeMol(mol)
     mol = Chem.AddHs(mol)
     AllChem.EmbedMolecule(mol)
-    AllChem.MMFFOptimizeMolecule(mol)
 
     # Replace protons back with dummy atoms
     mol = Chem.RWMol(mol)

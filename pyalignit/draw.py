@@ -5,6 +5,8 @@ pyalignit.draw
 Utilities for drawing pharmacophores
 
 """
+__all__ = ["PHARM_COLORS", "draw_pharmacophore"]
+
 import numpy as np
 
 from .cpyalignit import *

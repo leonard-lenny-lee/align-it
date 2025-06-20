@@ -5,6 +5,8 @@ pyalignit.exclusion
 Utilities for creating exclusion spheres
 
 """
+__all__ = ["create_exclusion_spheres"]
+
 import numpy as np
 
 from .cpyalignit import PharmacophorePoint, FuncGroup

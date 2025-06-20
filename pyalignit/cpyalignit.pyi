@@ -43,7 +43,7 @@ class Result:
     resMol: Any
     resPhar: Pharmacophore
 
-type Pharmacophore = list[PharmacophorePoint]
+Pharmacophore = list[PharmacophorePoint]
 
 def CalcPharmacophore(
     mol: Any,
