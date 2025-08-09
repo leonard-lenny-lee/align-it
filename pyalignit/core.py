@@ -1,30 +1,49 @@
-__all__ = ["prepare_mol", "decompose_mol", "recompose_mol"]
+__all__ = [
+    "prepare_mol", "prepare_mol_from_smiles", "decompose_mol", "recompose_mol"
+]
 
+from multiprocessing.pool import ThreadPool
 
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from rdkit.Chem import rdRGroupDecomposition as rdRGD
 
 
-def prepare_mol(mol: Chem.Mol) -> Chem.Mol:
-    # Replace dummy atoms with protons
+def batch_prepare_mols_from_smiles(smiles: list[str], prepare_db: bool = False) -> list[Chem.Mol]:
+    args = [(smi, prepare_db) for smi in smiles]
+    with ThreadPool() as pool:
+        mols = pool.starmap(prepare_mol_from_smiles, args)
+    return mols
+
+
+def prepare_mol_from_smiles(smi: str, prepare_db: bool = False) -> Chem.Mol:
+    mol = Chem.MolFromSmiles(smi, sanitize=True)
+    if mol is None:
+        raise ValueError(f"Invalid SMILES {smi}.")
+    mol = Chem.AddHs(mol)
+    mol = prepare_mol(mol, prepare_db)
+    return mol
+
+
+def prepare_mol(mol: Chem.Mol, prepare_db: bool = False) -> Chem.Mol:
+    # Replace wildcard atoms with protons for 3D embedding
     mol = Chem.RWMol(mol)
-    dummy_atom_idxs = []
+    wildcard_idxs = []
 
     for atom in mol.GetAtoms():
-        if atom.GetAtomicNum() == 0:
+        if atom.GetAtomicNum() == 0 or (atom.GetAtomicNum() == 1 and prepare_db):
             atom.SetAtomicNum(1)
-            dummy_atom_idxs.append(atom.GetIdx())
+            wildcard_idxs.append(atom.GetIdx())
 
-    # Energy minimization
+    # Embedding
     Chem.SanitizeMol(mol)
     mol = Chem.AddHs(mol)
     AllChem.EmbedMolecule(mol)
 
-    # Replace protons back with dummy atoms
+    # Replace protons back with wildcard atoms
     mol = Chem.RWMol(mol)
 
-    for idx in dummy_atom_idxs:
+    for idx in wildcard_idxs:
         atom = mol.GetAtomWithIdx(idx)
         atom.SetAtomicNum(0)
 

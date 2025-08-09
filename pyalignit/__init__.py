@@ -11,7 +11,7 @@ from .core import *
 from .draw import *
 from .pymol import *
 from .exclusion import *
-from .pharfile import *
+from .fileio import *
 
 # Get version information from cpp
 __version__ = GetVersion()
